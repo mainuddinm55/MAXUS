@@ -50,7 +50,7 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
-    @POST("")
+    @POST("createuser")
     Single<ResponseBody> registerNewUser(
             @Field("name") String name,
             @Field("username") String username,
@@ -68,7 +68,7 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
-    @POST("")
+    @POST("createpremiumuser")
     Single<ResponseBody> registerNewPremiumUser(
             @Field("name") String name,
             @Field("username") String username,

@@ -9,7 +9,7 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="username_text">username</string>
+    <string name="username_text">Username</string>
     <string name="add_match_text">Add Match</string>
     <string name="create_bet_text">Create Bet</string>
     <string name="set_bet_rate_text">Set Bet Rate</string>
@@ -45,4 +45,8 @@
     <string name="club_username_hint_text">Club username</string>
     <string name="reference_hint_text">Reference</string>
     <string name="security_pin_hint_text">Security pin</string>
+    <string name="agent_text">Agent</string>
+    <string name="admin_text">Admin</string>
+    <string name="club_text">Club</string>
+    <string name="normal_text">Normal</string>
 </resources>

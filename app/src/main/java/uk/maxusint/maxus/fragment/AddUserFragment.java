@@ -103,6 +103,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
     private String[] userTypes = new String[]{"Select user type", "Royal", "Classic", "Premium"};
     private int agentId;
     private int pinId;
+    private boolean isPinValid = false;
 
     public AddUserFragment() {
         // Required empty public constructor
@@ -239,7 +240,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
             return;
         }
 
-        if (userType.equals("Royal") || userType.equals("Classic")) {
+        if (userTypeId == 1 || userTypeId == 2) {
             if (TextUtils.isEmpty(pinEditText.getText())) {
                 pinLayout.setError("Pin required");
                 pinLayout.requestFocus();
@@ -247,7 +248,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
             }
 
         }
-        if (TextUtils.isEmpty(pinEditText.getText())) {
+        if (TextUtils.isEmpty(districtEditText.getText())) {
             districtLayout.setError("District required");
             districtLayout.requestFocus();
             return;
@@ -399,7 +400,6 @@ public class AddUserFragment extends Fragment implements TextWatcher {
     }
 
     private boolean checkSecurityPin(String pin) {
-        final boolean[] isValid = {false};
         disposable.add(
                 apiService.isPinValid(
                         pin,
@@ -414,7 +414,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
                                     JSONObject jsonObject = new JSONObject(response);
                                     boolean error = jsonObject.getBoolean("error");
                                     pinId = jsonObject.getInt("pin");
-                                    isValid[0] = error;
+                                    isPinValid = !error;
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 } catch (JSONException e) {
@@ -424,10 +424,10 @@ public class AddUserFragment extends Fragment implements TextWatcher {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                Log.e(TAG, "onError: " + e.getMessage());
                             }
                         })
         );
-        return isValid[0];
+        return isPinValid;
     }
 }
