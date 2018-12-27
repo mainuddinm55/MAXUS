@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">MAXUS</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="username_text">username</string>
+    <string name="add_match_text">Add Match</string>
+    <string name="create_bet_text">Create Bet</string>
+    <string name="set_bet_rate_text">Set Bet Rate</string>
+    <string name="bet_history_text">Bet History</string>
+    <string name="profit_shared_user_text">Profit Shared User</string>
+    <string name="all_user_text">All Users</string>
+    <string name="name_hint_text">Name</string>
+    <string name="username_hint_text">Username</string>
+    <string name="email_hint_text">Email</string>
+    <string name="mobile_hint_text">Mobile</string>
+    <string name="register_text">Register</string>
+    <string name="password_hint_text">Password</string>
+    <string name="confirm_password_hint_text">Confirm password</string>
+    <string name="district_hint_text">District</string>
+    <string name="upazilla_hint_text">Upazilla</string>
+    <string name="up_hint_text">Union parisad</string>
+    <string name="team1_hint_text">Team1 name</string>
+    <string name="team2_hint_text">Team2 name</string>
+    <string name="date_hint_text">Start Date</string>
+    <string name="time_hint_text">Start Time</string>
+    <string name="format_hint_text">Match format</string>
+    <string name="match_type_text">Match Type</string>
+    <string name="match_format_text">Match format</string>
+    <string name="status_text">Status</string>
+    <string name="question_text">Question</string>
+    <string name="match_text">Match</string>
+    <string name="bet_mode_text">Bet mode</string>
+    <string name="option_text">Option</string>
+    <string name="rate_text">Rate</string>
+    <string name="user_type_text">User type</string>
+    <string name="update_text">Update</string>
+    <string name="delete_text">Delete</string>
+    <string name="club_username_hint_text">Club username</string>
+    <string name="reference_hint_text">Reference</string>
+    <string name="security_pin_hint_text">Security pin</string>
+</resources>

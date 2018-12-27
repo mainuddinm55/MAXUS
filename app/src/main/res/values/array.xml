@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="home_items">
+        <item>Add Match</item>
+        <item>Create Bet</item>
+        <item>Set Bet Rate</item>
+        <item>Bet History</item>
+        <item>Profit Shared Users</item>
+        <item>All Users</item>
+    </string-array>
+</resources>
