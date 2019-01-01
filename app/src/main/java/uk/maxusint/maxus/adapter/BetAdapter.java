@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,6 +60,20 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
                 }
             }
         });
+        betHolder.finishBetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener != null)
+                    itemClickListener.onFinishClick(bet);
+            }
+        });
+        betHolder.cancelBetBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener != null)
+                    itemClickListener.onCancelClick(bet);
+            }
+        });
         adapter.setItemClickListener(new BetRateAdapter.ItemClickListener() {
             @Override
             public void onClick(BetRate betRate) {
@@ -86,6 +101,10 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
         TextView questionTextView;
         @BindView(R.id.option_recycler_view)
         RecyclerView allBetsRecyclerView;
+        @BindView(R.id.finish_bet_btn)
+        Button finishBetBtn;
+        @BindView(R.id.cancel_bet_btn)
+        Button cancelBetBtn;
 
         public BetHolder(@NonNull View itemView) {
             super(itemView);
@@ -97,5 +116,9 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
         void onBetClick(MatchBetRateResponse.Bet_ bet);
 
         void onRateClick(MatchBetRateResponse.Bet_ bet, BetRate betRate);
+
+        void onFinishClick(MatchBetRateResponse.Bet_ bet_);
+
+        void onCancelClick(MatchBetRateResponse.Bet_ bet_);
     }
 }

@@ -49,4 +49,8 @@
     <string name="admin_text">Admin</string>
     <string name="club_text">Club</string>
     <string name="normal_text">Normal</string>
+    <string name="login_text">Login</string>
+    <string name="home_text">Home</string>
+    <string name="user_text">User</string>
+    <string name="not_register_yet_register">Not register yet, <font color='red'>register</font></string>
 </resources>

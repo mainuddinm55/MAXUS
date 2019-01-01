@@ -1,10 +1,11 @@
-package uk.maxusint.maxus;
+package uk.maxusint.maxus.activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.activity.LoginActivity;
 
 public class LoginTypeActivity extends AppCompatActivity {

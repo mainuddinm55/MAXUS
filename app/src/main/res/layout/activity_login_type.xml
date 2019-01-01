@@ -7,7 +7,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".LoginTypeActivity">
+    tools:context=".activity.LoginTypeActivity">
 
     <Button
         android:id="@+id/admin_btn"

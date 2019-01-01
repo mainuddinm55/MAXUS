@@ -20,8 +20,10 @@ public class Bet implements Parcelable {
     private int status;
     @SerializedName("result")
     private String result;
+    @SerializedName("right_ans")
+    private int rightBetRateID;
 
-    public Bet(int betId, String question, String date, int matchId, int betMode, int status, String result) {
+    public Bet(int betId, String question, String date, int matchId, int betMode, int status, String result, int rightBetRateID) {
         this.betId = betId;
         this.question = question;
         this.date = date;
@@ -29,7 +31,9 @@ public class Bet implements Parcelable {
         this.betMode = betMode;
         this.status = status;
         this.result = result;
+        this.rightBetRateID = rightBetRateID;
     }
+
 
     protected Bet(Parcel in) {
         betId = in.readInt();
@@ -39,6 +43,7 @@ public class Bet implements Parcelable {
         betMode = in.readInt();
         status = in.readInt();
         result = in.readString();
+        rightBetRateID = in.readInt();
     }
 
     public static final Creator<Bet> CREATOR = new Creator<Bet>() {
@@ -52,6 +57,16 @@ public class Bet implements Parcelable {
             return new Bet[size];
         }
     };
+
+    public int getRightBetRateID() {
+        return rightBetRateID;
+    }
+
+    public void setRightBetRateID(int rightBetRateID) {
+        this.rightBetRateID = rightBetRateID;
+    }
+
+
 
     public int getBetId() {
         return betId;
@@ -109,6 +124,7 @@ public class Bet implements Parcelable {
         this.result = result;
     }
 
+
     @Override
     public int describeContents() {
         return 0;
@@ -123,5 +139,6 @@ public class Bet implements Parcelable {
         dest.writeInt(betMode);
         dest.writeInt(status);
         dest.writeString(result);
+        dest.writeInt(rightBetRateID);
     }
 }

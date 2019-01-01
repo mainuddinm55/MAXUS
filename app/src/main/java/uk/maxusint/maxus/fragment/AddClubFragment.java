@@ -40,7 +40,7 @@ import uk.maxusint.maxus.network.ApiService;
  * A simple {@link Fragment} subclass.
  */
 public class AddClubFragment extends Fragment {
-    private static final String TAG = "AddClubFragment";
+    public static final String TAG = "AddClubFragment";
     private CompositeDisposable disposable = new CompositeDisposable();
 
     @BindView(R.id.name_edit_text)

@@ -10,13 +10,17 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import uk.maxusint.maxus.network.response.AdminResponse;
+import uk.maxusint.maxus.network.response.AgentResponse;
 import uk.maxusint.maxus.network.response.AllBetRateResponse;
 import uk.maxusint.maxus.network.response.AllBetResponse;
 import uk.maxusint.maxus.network.response.BetRateResponse;
 import uk.maxusint.maxus.network.response.BetResponse;
+import uk.maxusint.maxus.network.response.ClubResponse;
 import uk.maxusint.maxus.network.response.InsertedMatchResponse;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 import uk.maxusint.maxus.network.response.MatchResponse;
+import uk.maxusint.maxus.network.response.UserResponse;
 
 public interface ApiService {
     @FormUrlEncoded
@@ -30,6 +34,13 @@ public interface ApiService {
             @Field("district") String district,
             @Field("upazilla") String upazilla,
             @Field("up") String up
+    );
+
+    @FormUrlEncoded
+    @POST("clublogin")
+    Single<ClubResponse> clubLogin(
+            @Field("email") String email,
+            @Field("password") String password
     );
 
     @GET("clubidbyusername/{username}")
@@ -47,6 +58,13 @@ public interface ApiService {
             @Field("district") String district,
             @Field("upazilla") String upazilla,
             @Field("up") String up
+    );
+
+    @FormUrlEncoded
+    @POST("agentlogin")
+    Single<AgentResponse> agentLogin(
+            @Field("email") String email,
+            @Field("password") String password
     );
 
     @FormUrlEncoded
@@ -82,6 +100,20 @@ public interface ApiService {
             @Field("up") String up
     );
 
+    @FormUrlEncoded
+    @POST("userlogin")
+    Single<UserResponse> userLogin(
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
+    @FormUrlEncoded
+    @POST("adminlogin")
+    Single<AdminResponse> adminLogin(
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
     @GET("getagentidbyreference/{reference}")
     Single<ResponseBody> getAgentIdByReference(@Path("reference") String reference);
 
@@ -91,6 +123,10 @@ public interface ApiService {
             @Field("pin") String pin,
             @Field("user_type_id") int userTypeId
     );
+
+    @FormUrlEncoded
+    @PUT("setpinused")
+    Single<ResponseBody> setPinUsed(@Field("pin") String pin);
 
     @FormUrlEncoded
     @POST("addmatch")
@@ -122,6 +158,17 @@ public interface ApiService {
             @Field("bet_mode") int betMode,
             @Path("id") int id
     );
+
+    @FormUrlEncoded
+    @PUT("updatebetresult/{id}")
+    Single<BetResponse> finishBet(
+            @Field("result") String result,
+            @Field("right_ans") int rightBetOptionId,
+            @Path("id") int id
+    );
+
+    @PUT("cancelbet/{id}")
+    Single<BetResponse> cancelBet(@Path("id") int id);
 
     @GET("allbets")
     Single<AllBetResponse> getAllBets();

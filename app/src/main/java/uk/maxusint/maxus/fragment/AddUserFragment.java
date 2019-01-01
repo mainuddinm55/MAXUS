@@ -275,16 +275,43 @@ public class AddUserFragment extends Fragment implements TextWatcher {
                                 try {
                                     String response = responseBody.string();
                                     JSONObject jsonObject = new JSONObject(response);
-                                    boolean err = jsonObject.getBoolean("error");
+                                    final boolean err = jsonObject.getBoolean("error");
                                     if (!err) {
                                         agentId = jsonObject.getInt("agent_id");
                                         if (userTypeId == 1 || userTypeId == 2) {
-                                            boolean isValid = checkSecurityPin(pinEditText.getText().toString());
-                                            if (isValid) {
-                                                registerUser();
-                                            } else {
-                                                pinLayout.setError("Pin is invalid");
-                                            }
+                                            disposable.add(
+                                                    apiService.isPinValid(
+                                                            pinEditText.getText().toString(),
+                                                            userTypeId
+                                                    ).subscribeOn(Schedulers.io())
+                                                            .observeOn(AndroidSchedulers.mainThread())
+                                                            .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                                                                @Override
+                                                                public void onSuccess(ResponseBody responseBody) {
+                                                                    try {
+                                                                        String response = responseBody.string();
+                                                                        JSONObject jsonObject = new JSONObject(response);
+                                                                        boolean error = jsonObject.getBoolean("error");
+                                                                        pinId = jsonObject.getInt("pin");
+                                                                        if (!error) {
+                                                                            registerUser();
+                                                                        } else {
+                                                                            pinLayout.setError("Pin is invalid");
+                                                                        }
+                                                                    } catch (IOException e) {
+                                                                        e.printStackTrace();
+                                                                    } catch (JSONException e) {
+                                                                        e.printStackTrace();
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onError(Throwable e) {
+                                                                    Log.e(TAG, "onError: " + e.getMessage());
+                                                                }
+                                                            })
+                                            );
+
                                         } else {
                                             registerUser();
                                         }
@@ -340,6 +367,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
                                         boolean error = jsonObject.getBoolean("error");
                                         if (!error) {
                                             Toast.makeText(context, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                                            updateSecurityPin(pinEditText.getText().toString());
                                         } else {
                                             errorTextView.setText(jsonObject.getString("message"));
                                         }
@@ -397,6 +425,37 @@ public class AddUserFragment extends Fragment implements TextWatcher {
                             })
             );
         }
+    }
+
+    private void updateSecurityPin(String pin) {
+        disposable.add(
+                apiService.setPinUsed(pin)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                            @Override
+                            public void onSuccess(ResponseBody responseBody) {
+                                try {
+                                    String response = responseBody.string();
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    if (!jsonObject.getBoolean("error")) {
+                                        Log.e(TAG, "onSuccess: " + jsonObject.getString("message"));
+                                    } else {
+                                        Log.e(TAG, "onSuccess: " + jsonObject.getString("message"));
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
     }
 
     private boolean checkSecurityPin(String pin) {
