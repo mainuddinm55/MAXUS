@@ -25,10 +25,12 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
     private Context mContext;
     private List<MatchBetRateResponse.Match_> allMatches;
     private ItemClickListener itemClickListener;
+    private String userType;
 
-    public MatchBetAdapter(Context context, List<MatchBetRateResponse.Match_> allMatches) {
+    public MatchBetAdapter(Context context, List<MatchBetRateResponse.Match_> allMatches, String userType) {
         this.allMatches = allMatches;
         mContext = context;
+        this.userType = userType;
     }
 
     @NonNull
@@ -45,7 +47,7 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
         matchBetHolder.questionRecyclerView.setHasFixedSize(true);
         matchBetHolder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         matchBetHolder.questionRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
-        BetAdapter adapter = new BetAdapter(mContext, match.getBets());
+        BetAdapter adapter = new BetAdapter(mContext, match.getBets(),userType);
         matchBetHolder.questionRecyclerView.setAdapter(adapter);
         String matchTitle = match.getMatch().getTeam1() + " vs " + match.getMatch().getTeam2();
         matchBetHolder.matchTextView.setText(matchTitle);

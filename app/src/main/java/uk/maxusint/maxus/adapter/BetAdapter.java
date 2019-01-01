@@ -17,6 +17,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.maxusint.maxus.R;
+import uk.maxusint.maxus.activity.LoginActivity;
 import uk.maxusint.maxus.network.model.BetRate;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 
@@ -25,10 +26,12 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
     private Context mContext;
     private List<MatchBetRateResponse.Bet_> bets;
     private ItemClickListener itemClickListener;
+    private String userType;
 
-    public BetAdapter(Context mContext, List<MatchBetRateResponse.Bet_> bets) {
+    public BetAdapter(Context mContext, List<MatchBetRateResponse.Bet_> bets, String userType) {
         this.mContext = mContext;
         this.bets = bets;
+        this.userType = userType;
     }
 
     @NonNull
@@ -109,6 +112,10 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
         public BetHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            if (userType == LoginActivity.NORMAL_TYPE) {
+                finishBetBtn.setVisibility(View.GONE);
+                cancelBetBtn.setVisibility(View.GONE);
+            }
         }
     }
 

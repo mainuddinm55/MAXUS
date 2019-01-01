@@ -25,6 +25,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
+import uk.maxusint.maxus.activity.LoginActivity;
 import uk.maxusint.maxus.adapter.MatchBetAdapter;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
@@ -66,8 +67,6 @@ public class AllBetFragment extends Fragment implements MatchBetAdapter.ItemClic
         apiService = ApiClient.getInstance().getApi();
 
         getAllMatches();
-
-
     }
 
     private void getAllMatches() {
@@ -78,7 +77,7 @@ public class AllBetFragment extends Fragment implements MatchBetAdapter.ItemClic
                         .subscribeWith(new DisposableSingleObserver<MatchBetRateResponse>() {
                             @Override
                             public void onSuccess(MatchBetRateResponse matchBetRateResponse) {
-                                MatchBetAdapter adapter = new MatchBetAdapter(mContext, matchBetRateResponse.getMatches());
+                                MatchBetAdapter adapter = new MatchBetAdapter(mContext, matchBetRateResponse.getMatches(),LoginActivity.ADMIN_TYPE);
                                 allBetsRecyclerView.setAdapter(adapter);
                                 adapter.setItemClickListener(AllBetFragment.this);
                             }
