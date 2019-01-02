@@ -40,13 +40,30 @@ public class User {
     private Integer typeId;
     @SerializedName("advanced_balance")
     @Expose
-    private Integer advancedBalance;
+    private float advancedBalance;
     @SerializedName("trade_balance")
     @Expose
-    private Object tradeBalance;
+    private float tradeBalance;
     @SerializedName("rank_id")
     @Expose
     private Integer rankId;
+
+    public User(Integer userId, String name, String username, String email, String mobile, String reference, Integer agentId, String district, String upazilla, String up, Integer typeId, float advancedBalance, float tradeBalance, Integer rankId) {
+        this.userId = userId;
+        this.name = name;
+        this.username = username;
+        this.email = email;
+        this.mobile = mobile;
+        this.reference = reference;
+        this.agentId = agentId;
+        this.district = district;
+        this.upazilla = upazilla;
+        this.up = up;
+        this.typeId = typeId;
+        this.advancedBalance = advancedBalance;
+        this.tradeBalance = tradeBalance;
+        this.rankId = rankId;
+    }
 
     public Integer getUserId() {
         return userId;
@@ -136,19 +153,19 @@ public class User {
         this.typeId = typeId;
     }
 
-    public Integer getAdvancedBalance() {
+    public float getAdvancedBalance() {
         return advancedBalance;
     }
 
-    public void setAdvancedBalance(Integer advancedBalance) {
+    public void setAdvancedBalance(float advancedBalance) {
         this.advancedBalance = advancedBalance;
     }
 
-    public Object getTradeBalance() {
+    public float getTradeBalance() {
         return tradeBalance;
     }
 
-    public void setTradeBalance(Object tradeBalance) {
+    public void setTradeBalance(float tradeBalance) {
         this.tradeBalance = tradeBalance;
     }
 
@@ -160,4 +177,10 @@ public class User {
         this.rankId = rankId;
     }
 
+    public class UserType {
+        public static final int ROYAL = 1;
+        public static final int CLASSIC = 2;
+        public static final int PREMIUM = 3;
+        public static final int BOTH = 4;
+    }
 }

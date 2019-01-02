@@ -67,7 +67,6 @@ public class Bet implements Parcelable {
     }
 
 
-
     public int getBetId() {
         return betId;
     }
@@ -140,5 +139,10 @@ public class Bet implements Parcelable {
         dest.writeInt(status);
         dest.writeString(result);
         dest.writeInt(rightBetRateID);
+    }
+
+    public class BetMode {
+        public static final int TRADE = 1;
+        public static final int ADVANCED = 2;
     }
 }

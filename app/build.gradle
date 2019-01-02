@@ -60,4 +60,8 @@ dependencies {
     implementation 'com.flyco.animation:FlycoAnimation_Lib:1.0.0@aar'
     implementation 'com.nineoldandroids:library:2.4.0'
 
+    //Material design library
+    implementation 'com.github.navasmdc:MaterialDesign:1.5@aar'
+    implementation 'io.github.yavski:fab-speed-dial:1.0.6'
+
 }

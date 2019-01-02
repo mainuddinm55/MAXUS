@@ -52,6 +52,9 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
         betHolder.allBetsRecyclerView.setHasFixedSize(true);
         betHolder.allBetsRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.HORIZONTAL));
         final MatchBetRateResponse.Bet_ bet = bets.get(i);
+        if (bet.getBetRates().size() == 0) {
+            betHolder.itemView.setVisibility(View.GONE);
+        }
         BetRateAdapter adapter = new BetRateAdapter(mContext, bet.getBetRates());
         betHolder.allBetsRecyclerView.setAdapter(adapter);
         betHolder.questionTextView.setText(bet.getBet().getQuestion());

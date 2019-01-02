@@ -44,6 +44,9 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
     @Override
     public void onBindViewHolder(@NonNull final MatchBetHolder matchBetHolder, final int i) {
         final MatchBetRateResponse.Match_ match = allMatches.get(i);
+        if (match.getBets().size()==0){
+            matchBetHolder.itemView.setVisibility(View.GONE);
+        }
         matchBetHolder.questionRecyclerView.setHasFixedSize(true);
         matchBetHolder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         matchBetHolder.questionRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));

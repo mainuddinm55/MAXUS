@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.reactivex.disposables.CompositeDisposable;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.adapter.BetRateAdapter;
@@ -57,6 +59,8 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
     TextView statusTextView;
     @BindView(R.id.option_recycler_view)
     RecyclerView optionRecyclerView;
+    @BindView(R.id.fab_speed_dial)
+    FabSpeedDial fabSpeedDial;
 
 
     public UpdateBetFragment() {
@@ -112,34 +116,54 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
                 BetRateAdapter adapter = new BetRateAdapter(mContext, bet_.getBetRates());
                 adapter.setItemClickListener(UpdateBetFragment.this);
                 optionRecyclerView.setAdapter(adapter);
+                fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
+                    @Override
+                    public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                        return true;
+                    }
+
+                    @Override
+                    public boolean onMenuItemSelected(MenuItem menuItem) {
+                        switch (menuItem.getItemId()) {
+                            case R.id.action_add:
+                                if (bet_ != null) {
+                                    Bundle betBundle = new Bundle();
+                                    betBundle.putParcelable(SetBetRateFragment.BET, bet_.getBet());
+                                    SetBetRateFragment fragment = new SetBetRateFragment();
+                                    fragment.setArguments(betBundle);
+                                    fragmentLoader.loadFragment(fragment, SetBetRateFragment.TAG);
+                                }
+                                return true;
+                            case R.id.action_update:
+                                if (bet_ != null) {
+                                    Bundle bundle = new Bundle();
+                                    bundle.putParcelable(CreateBetFragment.BET, bet_);
+                                    bundle.putParcelable(CreateBetFragment.MATCH, match_.getMatch());
+                                    CreateBetFragment fragment = new CreateBetFragment();
+                                    fragment.setArguments(bundle);
+                                    fragmentLoader.loadFragment(fragment, CreateBetFragment.TAG);
+                                }
+                                return true;
+                            case R.id.action_delete:
+                                if (bet_ != null) {
+
+                                }
+                                return true;
+                            default:
+                                return false;
+                        }
+                    }
+
+                    @Override
+                    public void onMenuClosed() {
+
+                    }
+                });
             }
         }
+
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        super.onCreateOptionsMenu(menu, inflater);
-        inflater.inflate(R.menu.update_delete_menu, menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.action_update) {
-            if (bet_ != null) {
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(CreateBetFragment.BET, bet_);
-                bundle.putParcelable(CreateBetFragment.MATCH, match_.getMatch());
-                CreateBetFragment fragment = new CreateBetFragment();
-                fragment.setArguments(bundle);
-                fragmentLoader.loadFragment(fragment, CreateBetFragment.TAG);
-            }
-        } else if (item.getItemId() == R.id.action_delete) {
-            if (bet_ != null) {
-
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     public void onClick(BetRate betRate) {
@@ -156,11 +180,11 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
             public void onClick(DialogInterface dialog, int which) {
                 if (which == 0) {
                     Bundle betRateBundle = new Bundle();
-                    betRateBundle.putParcelable(SetBetRateFragment.BET,bet_.getBet());
-                    betRateBundle.putParcelable(SetBetRateFragment.BET_RATE,betRate);
+                    betRateBundle.putParcelable(SetBetRateFragment.BET, bet_.getBet());
+                    betRateBundle.putParcelable(SetBetRateFragment.BET_RATE, betRate);
                     SetBetRateFragment fragment = new SetBetRateFragment();
                     fragment.setArguments(betRateBundle);
-                    fragmentLoader.loadFragment(fragment,SetBetRateFragment.TAG);
+                    fragmentLoader.loadFragment(fragment, SetBetRateFragment.TAG);
                 } else if (which == 1) {
                     Toast.makeText(mContext, "Deleted", Toast.LENGTH_SHORT).show();
                 }

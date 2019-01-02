@@ -151,6 +151,18 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
+    @POST("userbet")
+    Single<ResponseBody> placeUserBet(
+            @Field("user_id") int userId,
+            @Field("bet_id") int betId,
+            @Field("bet_option_id") int betOptionId,
+            @Field("bet_rate") double betRate,
+            @Field("bet_amount") double betAmount,
+            @Field("bet_return_amount") double betReturnAmount,
+            @Field("bet_mode_id") int betModeId
+    );
+
+    @FormUrlEncoded
     @PUT("updatebet/{id}")
     Single<BetResponse> updateBet(
             @Field("question") String question,
@@ -191,8 +203,11 @@ public interface ApiService {
             @Path("id") int betRateId
     );
 
-    @GET("allbetratesbygroupmatchandbet")
-    Single<MatchBetRateResponse> getBetRateWithMatchBetGroup();
+    @GET("allbetratesbygroupmatchandbet/{bet_mode}/{user_type_id}")
+    Single<MatchBetRateResponse> getBetRateWithMatchBetGroup(
+            @Path("bet_mode") int betModeId,
+            @Path("user_type_id") int userTypeId
+    );
 
     @GET("allmatches")
     Single<MatchResponse> getAllMatch();

@@ -54,4 +54,6 @@
     <string name="user_text">User</string>
     <string name="not_register_yet_register">Not register yet, <font color='red'>register</font></string>
     <string name="title_activity_user_home">UserHomeActivity</string>
+    <string name="place_bet_text">Place Bet</string>
+    <string name="add_rate_text">Add Rate</string>
 </resources>

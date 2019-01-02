@@ -28,6 +28,7 @@ import uk.maxusint.maxus.network.response.AdminResponse;
 import uk.maxusint.maxus.network.response.AgentResponse;
 import uk.maxusint.maxus.network.response.ClubResponse;
 import uk.maxusint.maxus.network.response.UserResponse;
+import uk.maxusint.maxus.utils.SharedPref;
 
 public class LoginActivity extends AppCompatActivity implements TextWatcher {
     private static final String TAG = "LoginActivity";
@@ -54,6 +55,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
     private CompositeDisposable disposable = new CompositeDisposable();
 
     private String userType;
+    private SharedPref sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,11 +130,13 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                         .subscribeWith(new DisposableSingleObserver<UserResponse>() {
                             @Override
                             public void onSuccess(UserResponse userResponse) {
+                                sharedPref = new SharedPref(LoginActivity.this);
                                 Log.e(TAG, "Error: " + userResponse.getError());
                                 Log.e(TAG, "Message: " + userResponse.getMessage());
                                 Log.e(TAG, "Club: " + userResponse.getUser());
                                 if (!userResponse.getError()) {
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                    sharedPref.putUser(userResponse.getUser());
+                                    Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                     startActivity(intent);
                                 }

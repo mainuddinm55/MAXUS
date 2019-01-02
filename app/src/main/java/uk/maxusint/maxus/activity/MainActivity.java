@@ -4,8 +4,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -30,9 +34,11 @@ import uk.maxusint.maxus.fragment.AddAgentFragment;
 import uk.maxusint.maxus.fragment.AddClubFragment;
 import uk.maxusint.maxus.fragment.AddMatchFragment;
 import uk.maxusint.maxus.fragment.AddUserFragment;
+import uk.maxusint.maxus.fragment.AdminHomeFragment;
 import uk.maxusint.maxus.fragment.AllBetFragment;
 import uk.maxusint.maxus.fragment.CreateBetFragment;
 import uk.maxusint.maxus.fragment.HomeFragment;
+import uk.maxusint.maxus.fragment.SetBetRateFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
@@ -40,6 +46,26 @@ import uk.maxusint.maxus.network.ApiService;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentLoader {
     private static final String TAG = "MainActivity";
+    private ViewPager viewPager;
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_home:
+                            viewPager.setCurrentItem(0);
+                            return true;
+                        case R.id.action_match:
+                            viewPager.setCurrentItem(1);
+                            return true;
+                        case R.id.action_user:
+                            viewPager.setCurrentItem(2);
+                            return true;
+                    }
+
+                    return false;
+                }
+            };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +85,14 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+        viewPager = findViewById(R.id.view_pager);
+        BottomNavigationAdapter adapter = new BottomNavigationAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(adapter.getCount() - 1);
+        BottomNavigationView navigation = findViewById(R.id.bottom_navigation_view);
+        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        loadFragment(new AllBetFragment(), AllBetFragment.TAG);
+        //loadFragment(new AdminHomeFragment(), AllBetFragment.TAG);
 
     }
 
@@ -103,7 +135,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_camera) {
-            // Handle the camera action
+            //loadFragment(new AdminHomeFragment(), "");
         } else if (id == R.id.nav_gallery) {
 
         } else if (id == R.id.nav_slideshow) {
@@ -136,5 +168,31 @@ public class MainActivity extends AppCompatActivity
         ft.replace(R.id.fragment_container, fragment, tag);
         ft.addToBackStack(tag);
         ft.commit();
+    }
+
+    private static class BottomNavigationAdapter extends FragmentPagerAdapter {
+
+
+        public BottomNavigationAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return AdminHomeFragment.getInstance();
+                case 1:
+                    return new AddClubFragment();
+                case 2:
+                    return new AddMatchFragment();
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
     }
 }

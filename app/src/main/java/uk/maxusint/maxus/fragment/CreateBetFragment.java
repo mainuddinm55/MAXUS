@@ -68,6 +68,12 @@ public class CreateBetFragment extends Fragment {
     TextInputEditText questionEditText;
     @BindView(R.id.bet_mode_spinner)
     Spinner betModeSpinner;
+    @BindView(R.id.bet_mode_text_view)
+    TextView betModeTextView;
+    @BindView(R.id.inserted_bet_mode_layout)
+    LinearLayout insertedBetModeLayout;
+    @BindView(R.id.update_bet_mode_layout)
+    LinearLayout updateBetModeLayout;
     @BindView(R.id.create_bet_btn)
     Button createBetBtn;
     MatchBetRateResponse.Bet_ bet_;
@@ -108,25 +114,19 @@ public class CreateBetFragment extends Fragment {
         if (bundle != null) {
             existingMatchLayout.setVisibility(View.GONE);
             insertedMatchLayout.setVisibility(View.VISIBLE);
+            insertedBetModeLayout.setVisibility(View.GONE);
+            updateBetModeLayout.setVisibility(View.VISIBLE);
             Match match = bundle.getParcelable(MATCH);
             bet_ = bundle.getParcelable(BET);
             if (bet_ != null) {
                 matchId = match.getId();
                 String insertedMatch = match.getTeam1() + " vs " + match.getTeam2();
                 matchTextView.setText(insertedMatch);
-                switch (bet_.getBet().getBetMode()) {
-                    case 1:
-                        betModeSpinner.setSelection(2);
-                        break;
-                    case 2:
-                        betModeSpinner.setSelection(3);
-                        break;
-                    case 3:
-                        betModeSpinner.setSelection(1);
-                        break;
-                    default:
-                        betModeSpinner.setSelection(0);
-                        break;
+                betMode = bet_.getBet().getBetMode();
+                if (bet_.getBet().getBetMode() == Bet.BetMode.TRADE) {
+                    betModeTextView.setText("Trade");
+                } else if (bet_.getBet().getBetMode() == Bet.BetMode.ADVANCED) {
+                    betModeTextView.setText("Advanced");
                 }
                 questionEditText.setText(bet_.getBet().getQuestion());
                 createBetBtn.setText("Update");
@@ -139,7 +139,8 @@ public class CreateBetFragment extends Fragment {
         } else {
             insertedMatchLayout.setVisibility(View.GONE);
             existingMatchLayout.setVisibility(View.VISIBLE);
-
+            insertedBetModeLayout.setVisibility(View.VISIBLE);
+            updateBetModeLayout.setVisibility(View.GONE);
             disposable.add(
                     apiService.getAllRunningResponse()
                             .subscribeOn(Schedulers.io())
@@ -148,7 +149,7 @@ public class CreateBetFragment extends Fragment {
                                 @Override
                                 public void onSuccess(final MatchResponse matchResponse) {
                                     Log.e(TAG, "onSuccess: " + matchResponse.getMatches().size());
-                                    setMonthSpinnerAdapter(matchResponse.getMatches());
+                                    setMatchSpinnerAdapter(matchResponse.getMatches());
 
                                 }
 
@@ -204,7 +205,7 @@ public class CreateBetFragment extends Fragment {
 
     }
 
-    private void setMonthSpinnerAdapter(final List<Match> matches) {
+    private void setMatchSpinnerAdapter(final List<Match> matches) {
         MatchSpinnerAdapter adapter = new MatchSpinnerAdapter(mContext, matches);
         matchSpinner.setAdapter(adapter);
         matchSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -277,30 +278,81 @@ public class CreateBetFragment extends Fragment {
     }
 
     private void createBet() {
-        disposable.add(
-                apiService.createBet(
-                        questionEditText.getText().toString(),
-                        date,
-                        matchId,
-                        betMode
-                ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<BetResponse>() {
-                            @Override
-                            public void onSuccess(BetResponse responseBody) {
-                                if (!responseBody.isErr()) {
-                                    showSetBetRateDialog(responseBody.getBet());
-                                } else {
-                                    Toast.makeText(mContext, responseBody.getMsg(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
+        if (betMode == 3) {
+            disposable.add(
+                    apiService.createBet(
+                            questionEditText.getText().toString(),
+                            date,
+                            matchId,
+                            Bet.BetMode.TRADE
+                    ).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<BetResponse>() {
+                                @Override
+                                public void onSuccess(BetResponse responseBody) {
+                                    if (!responseBody.isErr()) {
+                                        disposable.add(
+                                                apiService.createBet(
+                                                        questionEditText.getText().toString(),
+                                                        date,
+                                                        matchId,
+                                                        Bet.BetMode.ADVANCED
+                                                ).subscribeOn(Schedulers.io())
+                                                        .observeOn(AndroidSchedulers.mainThread())
+                                                        .subscribeWith(new DisposableSingleObserver<BetResponse>() {
+                                                            @Override
+                                                            public void onSuccess(BetResponse responseBody) {
+                                                                if (!responseBody.isErr()) {
+                                                                    Toast.makeText(mContext, responseBody.getMsg(), Toast.LENGTH_SHORT).show();
+                                                                } else {
+                                                                    Toast.makeText(mContext, responseBody.getMsg(), Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
 
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "onError: " + e.getMessage());
-                            }
-                        })
-        );
+                                                            @Override
+                                                            public void onError(Throwable e) {
+                                                                Log.e(TAG, "onError: " + e.getMessage());
+                                                            }
+                                                        })
+                                        );
+                                    } else {
+                                        Toast.makeText(mContext, responseBody.getMsg(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.e(TAG, "onError: " + e.getMessage());
+                                }
+                            })
+            );
+        } else {
+            disposable.add(
+                    apiService.createBet(
+                            questionEditText.getText().toString(),
+                            date,
+                            matchId,
+                            betMode
+                    ).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<BetResponse>() {
+                                @Override
+                                public void onSuccess(BetResponse responseBody) {
+                                    if (!responseBody.isErr()) {
+                                        showSetBetRateDialog(responseBody.getBet());
+                                    } else {
+                                        Toast.makeText(mContext, responseBody.getMsg(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    Log.e(TAG, "onError: " + e.getMessage());
+                                }
+                            })
+            );
+        }
+
     }
 
     private void showSetBetRateDialog(final Bet bet) {

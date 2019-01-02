@@ -30,7 +30,6 @@ import uk.maxusint.maxus.adapter.MatchBetAdapter;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
-import uk.maxusint.maxus.network.model.Bet;
 import uk.maxusint.maxus.network.model.BetRate;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.network.response.BetResponse;
@@ -39,8 +38,9 @@ import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AllBetFragment extends Fragment implements MatchBetAdapter.ItemClickListener {
-    public static final String TAG = "AllBetFragment";
+public class AllPremiumFragment extends Fragment implements MatchBetAdapter.ItemClickListener {
+    public static final String TAG = "AllPremiumFragment";
+    public static final String BET_MODE = "BET_MODE";
     private CompositeDisposable disposable = new CompositeDisposable();
     private FragmentLoader fragmentLoader;
     private Context mContext;
@@ -48,17 +48,18 @@ public class AllBetFragment extends Fragment implements MatchBetAdapter.ItemClic
     RecyclerView allBetsRecyclerView;
     private ApiService apiService;
     private int betRateId = 0;
+    private int betMode;
 
-    public AllBetFragment() {
+    public AllPremiumFragment() {
         // Required empty public constructor
     }
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_all_bet, container, false);
+        return inflater.inflate(R.layout.fragment_all_premium, container, false);
     }
 
     @Override
@@ -67,21 +68,26 @@ public class AllBetFragment extends Fragment implements MatchBetAdapter.ItemClic
         allBetsRecyclerView.setHasFixedSize(true);
         allBetsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         apiService = ApiClient.getInstance().getApi();
-
+        Bundle betModeBundle = getArguments();
+        if (betModeBundle != null) {
+            betMode = betModeBundle.getInt(BET_MODE);
+        }
         getAllMatches();
     }
 
     private void getAllMatches() {
         disposable.add(
-                apiService.getBetRateWithMatchBetGroup(Bet.BetMode.TRADE, User.UserType.CLASSIC)
+                apiService.getBetRateWithMatchBetGroup(betMode, User.UserType.PREMIUM)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<MatchBetRateResponse>() {
                             @Override
                             public void onSuccess(MatchBetRateResponse matchBetRateResponse) {
-                                MatchBetAdapter adapter = new MatchBetAdapter(mContext, matchBetRateResponse.getMatches(), LoginActivity.ADMIN_TYPE);
-                                allBetsRecyclerView.setAdapter(adapter);
-                                adapter.setItemClickListener(AllBetFragment.this);
+                                if (matchBetRateResponse.getMatches().size() > 0) {
+                                    MatchBetAdapter adapter = new MatchBetAdapter(mContext, matchBetRateResponse.getMatches(), LoginActivity.ADMIN_TYPE);
+                                    allBetsRecyclerView.setAdapter(adapter);
+                                    adapter.setItemClickListener(AllPremiumFragment.this);
+                                }
                             }
 
                             @Override
