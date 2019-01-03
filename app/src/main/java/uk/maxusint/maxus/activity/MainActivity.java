@@ -38,6 +38,7 @@ import uk.maxusint.maxus.fragment.AdminHomeFragment;
 import uk.maxusint.maxus.fragment.AllBetFragment;
 import uk.maxusint.maxus.fragment.CreateBetFragment;
 import uk.maxusint.maxus.fragment.HomeFragment;
+import uk.maxusint.maxus.fragment.MatchFragment;
 import uk.maxusint.maxus.fragment.SetBetRateFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
@@ -183,7 +184,7 @@ public class MainActivity extends AppCompatActivity
                 case 0:
                     return AdminHomeFragment.getInstance();
                 case 1:
-                    return new AddClubFragment();
+                    return new MatchFragment();
                 case 2:
                     return new AddMatchFragment();
             }

@@ -319,4 +319,9 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
     public void onCancelClick(MatchBetRateResponse.Bet_ bet_) {
 
     }
+
+    @Override
+    public void seeAllBetsClick() {
+
+    }
 }

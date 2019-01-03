@@ -13,13 +13,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,6 +30,7 @@ import uk.maxusint.maxus.adapter.BetRateAdapter;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
+import uk.maxusint.maxus.network.model.Bet;
 import uk.maxusint.maxus.network.model.BetRate;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 
@@ -37,9 +38,10 @@ import uk.maxusint.maxus.network.response.MatchBetRateResponse;
  * A simple {@link Fragment} subclass.
  */
 public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemClickListener {
+    public static final String TAG = "UpdateBetFragment";
     public static final String BET = "uk.maxusint.maxus.fragment.BET";
     public static final String MATCH = "uk.maxusint.maxus.fragment.MATCH";
-    public static final String TAG = "UpdateBetFragment";
+    public static final String BET_RATES = "uk.maxusint.maxus.fragment.BET_RATES";
     private CompositeDisposable disposable = new CompositeDisposable();
     private Context mContext;
     private FragmentLoader fragmentLoader;
@@ -69,7 +71,7 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_update_bet, container, false);
@@ -96,6 +98,7 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
         if (bundle != null) {
             bet_ = bundle.getParcelable(BET);
             match_ = bundle.getParcelable(MATCH);
+            List<BetRate> betRates = bundle.getParcelableArrayList(BET_RATES);
             if (bet_ != null) {
                 if (match_ != null) {
                     String matchTitle = match_.getMatch().getTeam1() + " vs " + match_.getMatch().getTeam2();
@@ -113,7 +116,7 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
                 optionRecyclerView.setHasFixedSize(true);
                 optionRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
                 optionRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.HORIZONTAL));
-                BetRateAdapter adapter = new BetRateAdapter(mContext, bet_.getBetRates());
+                BetRateAdapter adapter = new BetRateAdapter(mContext, betRates);
                 adapter.setItemClickListener(UpdateBetFragment.this);
                 optionRecyclerView.setAdapter(adapter);
                 fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
@@ -125,7 +128,14 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
                     @Override
                     public boolean onMenuItemSelected(MenuItem menuItem) {
                         switch (menuItem.getItemId()) {
-                            case R.id.action_add:
+                            case R.id.action_add_bet:
+                                CreateBetFragment createBetFragment = new CreateBetFragment();
+                                Bundle betModeBundle = new Bundle();
+                                betModeBundle.putInt(CreateBetFragment.BET_MODE, bet_.getBet().getBetMode());
+                                createBetFragment.setArguments(betModeBundle);
+                                fragmentLoader.loadFragment(createBetFragment, CreateBetFragment.TAG);
+                                return true;
+                            case R.id.action_add_bet_rate:
                                 if (bet_ != null) {
                                     Bundle betBundle = new Bundle();
                                     betBundle.putParcelable(SetBetRateFragment.BET, bet_.getBet());
@@ -152,6 +162,7 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
                             default:
                                 return false;
                         }
+
                     }
 
                     @Override

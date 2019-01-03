@@ -27,10 +27,6 @@ import android.widget.Toast;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.HttpException;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 import java.util.Calendar;
 
 import butterknife.BindView;
@@ -41,7 +37,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
@@ -52,9 +47,10 @@ import uk.maxusint.maxus.network.response.InsertedMatchResponse;
  * A simple {@link Fragment} subclass.
  */
 public class AddMatchFragment extends Fragment implements TextWatcher {
+    public static final String TAG = "AddMatchFragment";
     private FragmentLoader fragmentLoader;
-    private static final String TAG = "AddMatchFragment";
     private CompositeDisposable disposable = new CompositeDisposable();
+
     @BindView(R.id.team1_edit_text)
     TextInputEditText team1EditText;
     @BindView(R.id.team1_layout)
@@ -63,6 +59,10 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
     TextInputEditText team2EditText;
     @BindView(R.id.team2_layout)
     TextInputLayout team2Layout;
+    @BindView(R.id.tournament_edit_text)
+    TextInputEditText tournamentEditText;
+    @BindView(R.id.tournament_layout)
+    TextInputLayout tournamentLayout;
     @BindView(R.id.date_text_view)
     TextView dateTextView;
     @BindView(R.id.time_text_view)
@@ -101,7 +101,7 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_match, container, false);
@@ -115,6 +115,7 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
 
         team1EditText.addTextChangedListener(this);
         team2EditText.addTextChangedListener(this);
+        tournamentEditText.addTextChangedListener(this);
 
         ArrayAdapter<String> matchTypeAdapter = new ArrayAdapter<>(mContext, android.R.layout.simple_spinner_dropdown_item, matchTypes);
         matchTypeSpinner.setAdapter(matchTypeAdapter);
@@ -197,14 +198,19 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
 
     @OnClick(R.id.add_btn)
     void addMatch() {
-        if (TextUtils.isEmpty(team1EditText.getText().toString())) {
+        if (TextUtils.isEmpty(team1EditText.getText())) {
             team1Layout.setError("Team1 required");
             team1Layout.requestFocus();
             return;
         }
-        if (TextUtils.isEmpty(team2EditText.getText().toString())) {
+        if (TextUtils.isEmpty(team2EditText.getText())) {
             team2Layout.setError("Team2 required");
             team2Layout.requestFocus();
+            return;
+        }
+        if (TextUtils.isEmpty(tournamentEditText.getText())) {
+            tournamentLayout.setError("Tournament required");
+            tournamentLayout.requestFocus();
             return;
         }
         if (TextUtils.isEmpty(date)) {
@@ -233,6 +239,7 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
                         team1EditText.getText().toString(),
                         team2EditText.getText().toString(),
                         dateTime,
+                        tournamentEditText.getText().toString(),
                         matchType,
                         matchFormat
                 )
@@ -284,6 +291,7 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
         errorTextView.setText(null);
         team1Layout.setError(null);
         team2Layout.setError(null);
+        tournamentLayout.setError(null);
     }
 
     @Override

@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -24,7 +25,7 @@ import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
     private static final String TAG = "BetAdapter";
     private Context mContext;
-    private List<MatchBetRateResponse.Bet_> bets;
+    private List<MatchBetRateResponse.Bet_> bets = new ArrayList<>();
     private ItemClickListener itemClickListener;
     private String userType;
 
@@ -52,9 +53,6 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
         betHolder.allBetsRecyclerView.setHasFixedSize(true);
         betHolder.allBetsRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.HORIZONTAL));
         final MatchBetRateResponse.Bet_ bet = bets.get(i);
-        if (bet.getBetRates().size() == 0) {
-            betHolder.itemView.setVisibility(View.GONE);
-        }
         BetRateAdapter adapter = new BetRateAdapter(mContext, bet.getBetRates());
         betHolder.allBetsRecyclerView.setAdapter(adapter);
         betHolder.questionTextView.setText(bet.getBet().getQuestion());
@@ -115,7 +113,7 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
         public BetHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            if (userType == LoginActivity.NORMAL_TYPE) {
+            if (userType.equals(LoginActivity.NORMAL_TYPE)) {
                 finishBetBtn.setVisibility(View.GONE);
                 cancelBetBtn.setVisibility(View.GONE);
             }

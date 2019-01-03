@@ -7,59 +7,49 @@
     android:orientation="vertical"
     tools:context=".fragment.AddMatchFragment">
 
-    <LinearLayout
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/team1_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="5dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:padding="10dp"
-            android:text="Team2"
-            android:textSize="16sp" />
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/team1_layout"
-            android:layout_width="0dp"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/team1_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="3">
+            android:hint="@string/team1_hint_text"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/team1_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/team1_hint_text"
-                android:inputType="text" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
 
-    <LinearLayout
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/team2_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="5dp">
 
-        <TextView
-            android:layout_width="0dp"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/team2_edit_text"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:padding="10dp"
-            android:text="Team2"
-            android:textSize="16sp" />
+            android:hint="@string/team2_hint_text"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/team2_layout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3">
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/tournament_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp">
 
-            <android.support.design.widget.TextInputEditText
-                android:id="@+id/team2_edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/team2_hint_text"
-                android:inputType="text" />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/tournament_edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/tournament_text"
+            android:inputType="text" />
+    </android.support.design.widget.TextInputLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -160,13 +150,15 @@
             android:layout_weight="3"
             android:spinnerMode="dropdown" />
     </LinearLayout>
+
     <TextView
         android:id="@+id/err_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:text="err"
+        android:paddingLeft="16dp"
         android:textColor="@android:color/holo_red_dark"
-        android:paddingLeft="16dp"/>
+        tools:text="err" />
+
     <Button
         android:id="@+id/add_btn"
         android:layout_width="wrap_content"

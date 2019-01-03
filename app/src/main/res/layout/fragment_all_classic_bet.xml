@@ -9,6 +9,6 @@
         android:id="@+id/all_bets_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/match_row_item" />
+        tools:listitem="@layout/match_bet_row_item" />
 
 </FrameLayout>

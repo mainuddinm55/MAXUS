@@ -15,24 +15,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.adapter.ViewPagerAdapter;
-import uk.maxusint.maxus.network.model.Bet;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AdminHomeFragment extends Fragment {
+public class MatchFragment extends Fragment {
     @BindView(R.id.tabs)
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-
-    public AdminHomeFragment() {
+    public MatchFragment() {
         // Required empty public constructor
-    }
-
-    public static synchronized AdminHomeFragment getInstance() {
-        return new AdminHomeFragment();
     }
 
 
@@ -40,7 +34,7 @@ public class AdminHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_admin_home, container, false);
+        return inflater.inflate(R.layout.fragment_match, container, false);
     }
 
     @Override
@@ -48,21 +42,13 @@ public class AdminHomeFragment extends Fragment {
         ButterKnife.bind(this, view);
         setupWithViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     private void setupWithViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        TradeBetsFragment tradeBetsFragment = new TradeBetsFragment();
-        AllPremiumFragment premiumFragment = new AllPremiumFragment();
-        Bundle tradeBundle = new Bundle();
-        Bundle premiumBundle = new Bundle();
-        tradeBundle.putInt(TradeBetsFragment.BET_MODE, Bet.BetMode.TRADE);
-        premiumBundle.putInt(AllPremiumFragment.BET_MODE, Bet.BetMode.ADVANCED);
-        tradeBetsFragment.setArguments(tradeBundle);
-        premiumFragment.setArguments(premiumBundle);
-        adapter.addFragment(tradeBetsFragment, "TRADE");
-        adapter.addFragment(premiumFragment, "ADVANCED");
+        adapter.addFragment(RunningMatchFragment.getInstance(), "RUNNING");
+        adapter.addFragment(UpcomingMatchFragment.getInstance(), "UPCOMING");
+        adapter.addFragment(FinishMatchFragment.getInstance(), "FINISH");
         viewPager.setAdapter(adapter);
     }
 }

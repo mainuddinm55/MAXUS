@@ -3,7 +3,9 @@ package uk.maxusint.maxus.fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -18,6 +20,8 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -26,6 +30,7 @@ import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.activity.LoginActivity;
+import uk.maxusint.maxus.activity.UpdateBetActivity;
 import uk.maxusint.maxus.adapter.MatchBetAdapter;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
@@ -71,8 +76,8 @@ public class AllPremiumFragment extends Fragment implements MatchBetAdapter.Item
         Bundle betModeBundle = getArguments();
         if (betModeBundle != null) {
             betMode = betModeBundle.getInt(BET_MODE);
+            getAllMatches();
         }
-        getAllMatches();
     }
 
     private void getAllMatches() {
@@ -105,13 +110,14 @@ public class AllPremiumFragment extends Fragment implements MatchBetAdapter.Item
 
     @Override
     public void onBetClick(MatchBetRateResponse.Match_ match_, MatchBetRateResponse.Bet_ bet_) {
-        Bundle betBundle = new Bundle();
-        betBundle.putParcelable(UpdateBetFragment.BET, bet_);
-        betBundle.putParcelable(UpdateBetFragment.MATCH, match_);
-        UpdateBetFragment fragment = new UpdateBetFragment();
-        fragment.setArguments(betBundle);
-        fragmentLoader.loadFragment(fragment, UpdateBetFragment.TAG);
-        //Toast.makeText(mContext, bet_.getBet().getQuestion(), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(mContext, UpdateBetActivity.class);
+        intent.putExtra(UpdateBetActivity.BET, bet_);
+        intent.putExtra(UpdateBetActivity.MATCH, match_);
+        intent.putParcelableArrayListExtra(UpdateBetActivity.BET_RATES, (ArrayList<? extends Parcelable>) bet_.getBetRates());
+        intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_UPDATE_BET);
+        Log.e(TAG, "onBetClick: " + bet_.getBetRates().size());
+        Log.e(TAG, "onBetClick: " + bet_.getBet().getQuestion());
+        startActivity(intent);
     }
 
     @Override
@@ -191,6 +197,11 @@ public class AllPremiumFragment extends Fragment implements MatchBetAdapter.Item
     @Override
     public void onCancelClick(MatchBetRateResponse.Bet_ bet_) {
         cancelBet(bet_);
+    }
+
+    @Override
+    public void seeAllBetsClick() {
+
     }
 
     private void cancelBet(MatchBetRateResponse.Bet_ bet_) {

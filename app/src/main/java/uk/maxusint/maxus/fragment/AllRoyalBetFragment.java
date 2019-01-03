@@ -195,6 +195,11 @@ public class AllRoyalBetFragment extends Fragment implements MatchBetAdapter.Ite
         cancelBet(bet_);
     }
 
+    @Override
+    public void seeAllBetsClick() {
+
+    }
+
     private void cancelBet(MatchBetRateResponse.Bet_ bet_) {
         disposable.add(
                 apiService.cancelBet(bet_.getBet().getBetId())

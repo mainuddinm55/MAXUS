@@ -23,16 +23,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.LoginTypeActivity">
-
-        </activity>
+        <activity android:name=".activity.LoginTypeActivity"></activity>
         <activity android:name=".activity.RegisterActivity" />
         <activity
             android:name=".activity.UserHomeActivity"
             android:label="@string/title_activity_user_home"
-            android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".activity.UpdateBetActivity"></activity>
     </application>
 
 </manifest>

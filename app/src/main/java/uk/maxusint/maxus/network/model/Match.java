@@ -17,6 +17,8 @@ public class Match implements Parcelable {
     private String team2;
     @SerializedName("date_time")
     private String dateTime;
+    @SerializedName("tournament")
+    private String tournament;
     @SerializedName("match_type")
     private String matchType;
     @SerializedName("match_format")
@@ -24,21 +26,24 @@ public class Match implements Parcelable {
     @SerializedName("status")
     private String status;
 
-    public Match(int id, String team1, String team2, String dateTime, String matchType, String matchFormat, String status) {
+    public Match(int id, String team1, String team2, String dateTime, String tournament, String matchType, String matchFormat, String status) {
         this.id = id;
         this.team1 = team1;
         this.team2 = team2;
         this.dateTime = dateTime;
+        this.tournament = tournament;
         this.matchType = matchType;
         this.matchFormat = matchFormat;
         this.status = status;
     }
+
 
     protected Match(Parcel in) {
         id = in.readInt();
         team1 = in.readString();
         team2 = in.readString();
         dateTime = in.readString();
+        tournament = in.readString();
         matchType = in.readString();
         matchFormat = in.readString();
         status = in.readString();
@@ -112,6 +117,14 @@ public class Match implements Parcelable {
         this.status = status;
     }
 
+    public String getTournament() {
+        return tournament;
+    }
+
+    public void setTournament(String tournament) {
+        this.tournament = tournament;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -123,6 +136,7 @@ public class Match implements Parcelable {
         dest.writeString(team1);
         dest.writeString(team2);
         dest.writeString(dateTime);
+        dest.writeString(tournament);
         dest.writeString(matchType);
         dest.writeString(matchFormat);
         dest.writeString(status);

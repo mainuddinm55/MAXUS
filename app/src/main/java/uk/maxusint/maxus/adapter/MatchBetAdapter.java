@@ -8,8 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import java.util.List;
@@ -31,26 +31,24 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
         this.allMatches = allMatches;
         mContext = context;
         this.userType = userType;
+
     }
 
     @NonNull
     @Override
     public MatchBetHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View view = LayoutInflater.from(viewGroup.getContext().getApplicationContext())
-                .inflate(R.layout.match_row_item, viewGroup, false);
+                .inflate(R.layout.match_bet_row_item, viewGroup, false);
         return new MatchBetHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull final MatchBetHolder matchBetHolder, final int i) {
         final MatchBetRateResponse.Match_ match = allMatches.get(i);
-        if (match.getBets().size()==0){
-            matchBetHolder.itemView.setVisibility(View.GONE);
-        }
         matchBetHolder.questionRecyclerView.setHasFixedSize(true);
         matchBetHolder.questionRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         matchBetHolder.questionRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
-        BetAdapter adapter = new BetAdapter(mContext, match.getBets(),userType);
+        BetAdapter adapter = new BetAdapter(mContext, match.getBets(), userType);
         matchBetHolder.questionRecyclerView.setAdapter(adapter);
         String matchTitle = match.getMatch().getTeam1() + " vs " + match.getMatch().getTeam2();
         matchBetHolder.matchTextView.setText(matchTitle);
@@ -81,6 +79,13 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
                     itemClickListener.onCancelClick(bet_);
             }
         });
+        matchBetHolder.seeAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener != null)
+                    itemClickListener.seeAllBetsClick();
+            }
+        });
         matchBetHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +112,8 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
         TextView matchTextView;
         @BindView(R.id.question_recycler_view)
         RecyclerView questionRecyclerView;
+        @BindView(R.id.see_all_btn)
+        Button seeAllBtn;
 
         public MatchBetHolder(@NonNull View itemView) {
             super(itemView);
@@ -124,5 +131,7 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
         void onFinishClick(MatchBetRateResponse.Bet_ bet_);
 
         void onCancelClick(MatchBetRateResponse.Bet_ bet_);
+
+        void seeAllBetsClick();
     }
 }

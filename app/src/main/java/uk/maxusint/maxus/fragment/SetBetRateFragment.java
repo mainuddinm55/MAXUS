@@ -82,7 +82,7 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
     @BindView(R.id.set_bet_rate_btn)
     Button setBetRateBtn;
 
-    private String[] tradeModeUserTypes = new String[]{"Select user type", "Classic", "Royal", "Premium"};
+    private String[] tradeModeUserTypes = new String[]{"Select user type", "Classic", "Royal"};
     private String[] advancedModeUserTypes = new String[]{"Select user type", "Classic", "Royal", "Premium"};
 
     private int userType;

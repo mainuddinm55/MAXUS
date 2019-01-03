@@ -134,12 +134,20 @@ public interface ApiService {
             @Field("team1") String team1,
             @Field("team2") String team2,
             @Field("date_time") String dateTime,
+            @Field("tournament") String tournament,
             @Field("match_type") String matchType,
             @Field("match_format") String matchFormat
     );
 
     @GET("allrunningmatch")
-    Single<MatchResponse> getAllRunningResponse();
+    Single<MatchResponse> getAllRunningMatch();
+
+    @GET("allupcomingmatch")
+    Single<MatchResponse> getAllUpcomingMatch();
+
+    @GET("allfinishmatch")
+    Single<MatchResponse> getAllFinishMatch();
+
 
     @FormUrlEncoded
     @POST("createbet")

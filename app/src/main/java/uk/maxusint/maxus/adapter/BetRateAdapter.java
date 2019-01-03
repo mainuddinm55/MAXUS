@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -17,7 +18,7 @@ import uk.maxusint.maxus.network.model.BetRate;
 
 public class BetRateAdapter extends RecyclerView.Adapter<BetRateAdapter.BetRateHolder> {
     private Context mContext;
-    private List<BetRate> betRates;
+    private List<BetRate> betRates = new ArrayList<>();
     private ItemClickListener itemClickListener;
 
     public BetRateAdapter(Context context, List<BetRate> betRates) {

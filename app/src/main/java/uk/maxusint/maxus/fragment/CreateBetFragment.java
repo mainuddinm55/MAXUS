@@ -9,14 +9,12 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -31,7 +29,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
-import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -52,9 +49,10 @@ import uk.maxusint.maxus.network.response.MatchResponse;
  * A simple {@link Fragment} subclass.
  */
 public class CreateBetFragment extends Fragment {
+    public static final String TAG = "CreateBetFragment";
     public static final String MATCH = "uk.maxusint.maxus.fragment.MATCH";
     public static final String BET = "uk.maxusint.maxus.fragment.BET";
-    public static final String TAG = "CreateBetFragment";
+    public static final String BET_MODE = "uk.maxusint.maxus.fragment.BET_MODE";
     private CompositeDisposable disposable = new CompositeDisposable();
     @BindView(R.id.existing_match_layout)
     LinearLayout existingMatchLayout;
@@ -66,12 +64,8 @@ public class CreateBetFragment extends Fragment {
     TextView matchTextView;
     @BindView(R.id.question_edit_text)
     TextInputEditText questionEditText;
-    @BindView(R.id.bet_mode_spinner)
-    Spinner betModeSpinner;
     @BindView(R.id.bet_mode_text_view)
     TextView betModeTextView;
-    @BindView(R.id.inserted_bet_mode_layout)
-    LinearLayout insertedBetModeLayout;
     @BindView(R.id.update_bet_mode_layout)
     LinearLayout updateBetModeLayout;
     @BindView(R.id.create_bet_btn)
@@ -81,7 +75,6 @@ public class CreateBetFragment extends Fragment {
     private Unbinder unbinder;
     private Context mContext;
 
-    private String[] betModes = new String[]{"Select bet mode", "Both", "Trade", "Advanced"};
 
     private int betMode;
     private int matchId;
@@ -96,7 +89,7 @@ public class CreateBetFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_create_bet, container, false);
@@ -107,84 +100,63 @@ public class CreateBetFragment extends Fragment {
         unbinder = ButterKnife.bind(this, view);
         apiService = ApiClient.getInstance().getApi();
 
-        final ArrayAdapter<String> betModeAdapter = new ArrayAdapter<String>(mContext, R.layout.dropdown_spinner_item, R.id.text_view_list_item, betModes);
-        betModeSpinner.setAdapter(betModeAdapter);
-
         Bundle bundle = getArguments();
         if (bundle != null) {
-            existingMatchLayout.setVisibility(View.GONE);
-            insertedMatchLayout.setVisibility(View.VISIBLE);
-            insertedBetModeLayout.setVisibility(View.GONE);
-            updateBetModeLayout.setVisibility(View.VISIBLE);
             Match match = bundle.getParcelable(MATCH);
             bet_ = bundle.getParcelable(BET);
+            betMode = bundle.getInt(BET_MODE);
+            if (betMode != 0) {
+                if (betMode == Bet.BetMode.TRADE) {
+                    betModeTextView.setText(getString(R.string.trade_text));
+                } else if (betMode == Bet.BetMode.ADVANCED) {
+                    betModeTextView.setText(getString(R.string.advanced_text));
+                }
+                insertedMatchLayout.setVisibility(View.GONE);
+                existingMatchLayout.setVisibility(View.VISIBLE);
+                disposable.add(
+                        apiService.getAllRunningMatch()
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeWith(new DisposableSingleObserver<MatchResponse>() {
+                                    @Override
+                                    public void onSuccess(final MatchResponse matchResponse) {
+                                        Log.e(TAG, "onSuccess: " + matchResponse.getMatches().size());
+                                        setMatchSpinnerAdapter(matchResponse.getMatches());
+
+                                    }
+
+                                    @Override
+                                    public void onError(Throwable e) {
+
+                                    }
+                                })
+                );
+            } else {
+                existingMatchLayout.setVisibility(View.GONE);
+                insertedMatchLayout.setVisibility(View.VISIBLE);
+            }
             if (bet_ != null) {
+                assert match != null;
                 matchId = match.getId();
                 String insertedMatch = match.getTeam1() + " vs " + match.getTeam2();
                 matchTextView.setText(insertedMatch);
                 betMode = bet_.getBet().getBetMode();
                 if (bet_.getBet().getBetMode() == Bet.BetMode.TRADE) {
-                    betModeTextView.setText("Trade");
+                    betModeTextView.setText(getString(R.string.trade_text));
                 } else if (bet_.getBet().getBetMode() == Bet.BetMode.ADVANCED) {
-                    betModeTextView.setText("Advanced");
+                    betModeTextView.setText(getString(R.string.advanced_text));
                 }
                 questionEditText.setText(bet_.getBet().getQuestion());
-                createBetBtn.setText("Update");
-            } else {
+                createBetBtn.setText(getString(R.string.update_text));
+            } else if (match != null) {
                 matchId = match.getId();
                 String insertedMatch = match.getTeam1() + " vs " + match.getTeam2();
                 matchTextView.setText(insertedMatch);
             }
 
-        } else {
-            insertedMatchLayout.setVisibility(View.GONE);
-            existingMatchLayout.setVisibility(View.VISIBLE);
-            insertedBetModeLayout.setVisibility(View.VISIBLE);
-            updateBetModeLayout.setVisibility(View.GONE);
-            disposable.add(
-                    apiService.getAllRunningResponse()
-                            .subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeWith(new DisposableSingleObserver<MatchResponse>() {
-                                @Override
-                                public void onSuccess(final MatchResponse matchResponse) {
-                                    Log.e(TAG, "onSuccess: " + matchResponse.getMatches().size());
-                                    setMatchSpinnerAdapter(matchResponse.getMatches());
 
-                                }
-
-                                @Override
-                                public void onError(Throwable e) {
-
-                                }
-                            })
-            );
         }
 
-
-        betModeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0) {
-                    switch ((String) parent.getItemAtPosition(position)) {
-                        case "Both":
-                            betMode = 3;
-                            break;
-                        case "Trade":
-                            betMode = 1;
-                            break;
-                        case "Advanced":
-                            betMode = 2;
-                            break;
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         disposable.add(
                 apiService.getAllBets()
@@ -384,5 +356,11 @@ public class CreateBetFragment extends Fragment {
             }
         });
         betRateDialog.show();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unbinder.unbind();
     }
 }

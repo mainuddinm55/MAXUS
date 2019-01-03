@@ -47,6 +47,7 @@ public class MatchBetRateResponse {
 
         protected Bet_(Parcel in) {
             bet = in.readParcelable(Bet.class.getClassLoader());
+            betRates = in.createTypedArrayList(BetRate.CREATOR);
         }
 
         public static final Creator<Bet_> CREATOR = new Creator<Bet_>() {
@@ -69,12 +70,13 @@ public class MatchBetRateResponse {
             this.bet = bet;
         }
 
-        public List<BetRate> getBetRates() {
-            return betRates;
-        }
 
         public void setBetRates(List<BetRate> betRates) {
             this.betRates = betRates;
+        }
+
+        public List<BetRate> getBetRates() {
+            return betRates;
         }
 
         @Override
@@ -85,6 +87,7 @@ public class MatchBetRateResponse {
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeParcelable(bet, flags);
+            dest.writeTypedList(betRates);
         }
     }
 
@@ -96,6 +99,7 @@ public class MatchBetRateResponse {
         @SerializedName("bets")
         @Expose
         private List<Bet_> bets = null;
+
 
         protected Match_(Parcel in) {
             match = in.readParcelable(Match.class.getClassLoader());
@@ -129,6 +133,7 @@ public class MatchBetRateResponse {
         public void setBets(List<Bet_> bets) {
             this.bets = bets;
         }
+
 
         @Override
         public int describeContents() {

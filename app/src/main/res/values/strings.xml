@@ -56,4 +56,11 @@
     <string name="title_activity_user_home">UserHomeActivity</string>
     <string name="place_bet_text">Place Bet</string>
     <string name="add_rate_text">Add Rate</string>
+    <string name="classic_text">Classic</string>
+    <string name="royal_text">Royal</string>
+    <string name="add_bet_text">Add Bet</string>
+    <string name="trade_text">Trade</string>
+    <string name="advanced_text">Advanced</string>
+    <string name="no_match_found_text">No match found</string>
+    <string name="tournament_text">Tournament</string>
 </resources>

@@ -193,6 +193,11 @@ public class AllClassicBetFragment extends Fragment implements MatchBetAdapter.I
         cancelBet(bet_);
     }
 
+    @Override
+    public void seeAllBetsClick() {
+
+    }
+
     private void cancelBet(MatchBetRateResponse.Bet_ bet_) {
         disposable.add(
                 apiService.cancelBet(bet_.getBet().getBetId())
