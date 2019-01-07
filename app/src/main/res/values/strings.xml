@@ -7,7 +7,6 @@
     <string name="nav_header_desc">Navigation header</string>
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="username_text">Username</string>
     <string name="add_match_text">Add Match</string>
@@ -63,4 +62,6 @@
     <string name="advanced_text">Advanced</string>
     <string name="no_match_found_text">No match found</string>
     <string name="tournament_text">Tournament</string>
+    <string name="betting_text">Betting</string>
+    <string name="profile_text">Profile</string>
 </resources>
