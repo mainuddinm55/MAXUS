@@ -18,7 +18,7 @@ import uk.maxusint.maxus.network.model.User;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     private ItemClickListener itemClickListener;
-    private List<User> users = new ArrayList<>();
+    private List<User> users ;
 
     public UserAdapter(List<User> users) {
         this.users = users;
@@ -54,7 +54,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         return users.size();
     }
 
-    public class UserHolder extends RecyclerView.ViewHolder {
+    class UserHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.name_text_view)
         TextView nameTextView;
         @BindView(R.id.user_type_text_view)
@@ -64,12 +64,12 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         @BindView(R.id.mobile_text_view)
         TextView mobileTextView;
 
-        public UserHolder(@NonNull View itemView) {
+        UserHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindTo(User user) {
+        void bindTo(User user) {
             //String address = user.getUp() + ", " + user.getUpazilla() + ", " + user.getDistrict();
             nameTextView.setText(user.getName());
             addressTextView.setText(user.getDistrict());

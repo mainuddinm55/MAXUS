@@ -33,6 +33,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".activity.UpdateUserActivity"></activity>
+        <activity android:name=".activity.BalanceTransferActivity"></activity>
+        <activity android:name=".activity.DepositActivity"></activity>
+        <activity android:name=".activity.WithdrawActivity"></activity>
     </application>
 
 </manifest>

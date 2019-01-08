@@ -21,7 +21,7 @@ import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.network.model.Transaction;
 
 public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.TransactionHolder> {
-    private List<Transaction> transactionList = new ArrayList<>();
+    private List<Transaction> transactionList ;
     private ItemClickListener itemClickListener;
 
     public TransactionAdapter(List<Transaction> transactionList) {
@@ -63,7 +63,7 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         void onClick(Transaction transaction);
     }
 
-    public class TransactionHolder extends RecyclerView.ViewHolder {
+    class TransactionHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.date_text_view)
         TextView dateTextView;
         @BindView(R.id.username_text_view)
@@ -73,12 +73,12 @@ public class TransactionAdapter extends RecyclerView.Adapter<TransactionAdapter.
         @BindView(R.id.status_text_view)
         TextView statusTextView;
 
-        public TransactionHolder(@NonNull View itemView) {
+        TransactionHolder(@NonNull View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindTo(Transaction transaction) {
+        void bindTo(Transaction transaction) {
             String date = "Date: " + getDateTimeFromString(transaction.getTransDate());
             String username = "To Username: " + transaction.getToUsername();
             String amount = transaction.getAmount() + " $";

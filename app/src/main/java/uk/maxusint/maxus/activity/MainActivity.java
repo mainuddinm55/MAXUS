@@ -156,7 +156,7 @@ public class MainActivity extends AppCompatActivity
     private static class BottomNavigationAdapter extends FragmentPagerAdapter {
 
 
-        public BottomNavigationAdapter(FragmentManager fm) {
+        BottomNavigationAdapter(FragmentManager fm) {
             super(fm);
         }
 

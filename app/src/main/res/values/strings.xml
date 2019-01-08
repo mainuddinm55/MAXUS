@@ -63,4 +63,15 @@
     <string name="advanced_text">Advanced</string>
     <string name="no_match_found_text">No match found</string>
     <string name="tournament_text">Tournament</string>
+    <string name="rank_text">Rank</string>
+    <string name="active_text">Active</string>
+    <string name="address_text">Address</string>
+    <string name="date_text">Date</string>
+    <string name="amount_text">Amount</string>
+    <string name="account_text">Account</string>
+    <string name="balance_text">Balance</string>
+    <string name="deposit_text">Deposit</string>
+    <string name="withdraw_text">Withdraw</string>
+    <string name="balance_transfer_text">Balance Transfer</string>
+    <string name="send_request_btn_text">Send Request</string>
 </resources>
