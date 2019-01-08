@@ -4,15 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragment.AllUserFragment">
+    tools:context=".fragment.AllClubFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/users_recycler_view"
+        android:id="@+id/clubs_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:scrollbars="vertical"
         app:layoutManager="android.support.v7.widget.LinearLayoutManager"
         tools:listitem="@layout/user_row_item" />
+
 
 </FrameLayout>

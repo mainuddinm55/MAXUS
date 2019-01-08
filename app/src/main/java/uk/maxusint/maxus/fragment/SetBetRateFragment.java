@@ -149,9 +149,6 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
                             case "Premium":
                                 userType = User.UserType.PREMIUM;
                                 break;
-                            case "All":
-                                userType = User.UserType.BOTH;
-                                break;
                             default:
                                 userType = 0;
                                 break;
@@ -212,7 +209,7 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
     }
 
     private void createBetRate() {
-        if (userType == User.UserType.BOTH) {
+        /*if (userType == User.UserType.BOTH) {
             disposable.add(
                     apiService.setBetRate(
                             bet.getBetId(),
@@ -313,42 +310,42 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
                                 }
                             })
             );
-        } else {
-            disposable.add(
-                    apiService.setBetRate(
-                            bet.getBetId(),
-                            optionEditText.getText().toString(),
-                            Float.parseFloat(rateEditText.getText().toString()),
-                            userType,
-                            betMode
-                    ).subscribeOn(Schedulers.io())
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
-                                @Override
-                                public void onSuccess(ResponseBody responseBody) {
-                                    try {
-                                        String response = responseBody.string();
-                                        JSONObject jsonObject = new JSONObject(response);
-                                        boolean err = jsonObject.getBoolean("error");
-                                        if (!err) {
-                                            String msg = jsonObject.getString("message");
-                                            Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
-                                            showMoreOptionDialog();
-                                        }
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
+        }*/
+        disposable.add(
+                apiService.setBetRate(
+                        bet.getBetId(),
+                        optionEditText.getText().toString(),
+                        Float.parseFloat(rateEditText.getText().toString()),
+                        userType,
+                        betMode
+                ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                            @Override
+                            public void onSuccess(ResponseBody responseBody) {
+                                try {
+                                    String response = responseBody.string();
+                                    JSONObject jsonObject = new JSONObject(response);
+                                    boolean err = jsonObject.getBoolean("error");
+                                    if (!err) {
+                                        String msg = jsonObject.getString("message");
+                                        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+                                        showMoreOptionDialog();
                                     }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
+                            }
 
-                                @Override
-                                public void onError(Throwable e) {
+                            @Override
+                            public void onError(Throwable e) {
 
-                                }
-                            })
-            );
-        }
+                            }
+                        })
+        );
+
     }
 
     private void updateBetRate() {

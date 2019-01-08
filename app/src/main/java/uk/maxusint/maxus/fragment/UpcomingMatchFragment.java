@@ -39,7 +39,7 @@ import uk.maxusint.maxus.network.response.MatchResponse;
  * A simple {@link Fragment} subclass.
  */
 public class UpcomingMatchFragment extends Fragment {
-    public static final String TAG = "RunningMatchFragment";
+    public static final String TAG = "UpcomingMatchFragment";
     private static UpcomingMatchFragment sInstance;
     private CompositeDisposable disposable = new CompositeDisposable();
     private ApiService apiService;
@@ -56,9 +56,11 @@ public class UpcomingMatchFragment extends Fragment {
 
     public UpcomingMatchFragment() {
         // Required empty public constructor
+        Log.e(TAG, "UpcomingMatchFragment: " );
     }
 
     public static synchronized UpcomingMatchFragment getInstance() {
+        Log.e(TAG, "getInstance: " );
         if (sInstance == null)
             sInstance = new UpcomingMatchFragment();
         return sInstance;
@@ -67,6 +69,7 @@ public class UpcomingMatchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: " );
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_upcoming_match, container, false);
     }
@@ -75,7 +78,7 @@ public class UpcomingMatchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         apiService = ApiClient.getInstance().getApi();
-
+        Log.e(TAG, "onViewCreated: " );
         upcomingMatchRecyclerView.setHasFixedSize(true);
         upcomingMatchRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         upcomingMatchRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
@@ -85,6 +88,29 @@ public class UpcomingMatchFragment extends Fragment {
 
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop: ");
+    }
     @OnClick(R.id.add_match)
     void addMatch() {
         Intent intent = new Intent(mContext, UpdateBetActivity.class);

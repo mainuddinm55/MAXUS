@@ -14,20 +14,27 @@ import android.view.ViewGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.adapter.ViewPagerAdapter;
+import uk.maxusint.maxus.network.ApiClient;
+import uk.maxusint.maxus.network.ApiService;
+import uk.maxusint.maxus.network.response.AllUserResponse;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class MatchFragment extends Fragment {
-    private static final String TAG = "MatchFragment";
+public class UserFragment extends Fragment {
+    public static final String TAG = "UserFragment";
     @BindView(R.id.tabs)
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
 
-    public MatchFragment() {
+    public UserFragment() {
         // Required empty public constructor
     }
 
@@ -35,27 +42,27 @@ public class MatchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView: ");
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_match, container, false);
+        Log.e(TAG, "onCreateView: ");
+        return inflater.inflate(R.layout.fragment_user, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-        Log.e(TAG, "onViewCreated: ");
-        setupWithViewPager(viewPager);
+        Log.e(TAG, "onViewCreated");
+        setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
+
     }
 
-    private void setupWithViewPager(ViewPager viewPager) {
+    private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(RunningMatchFragment.getInstance(), "RUNNING");
-        adapter.addFragment(UpcomingMatchFragment.getInstance(), "UPCOMING");
-        adapter.addFragment(FinishMatchFragment.getInstance(), "FINISH");
+        adapter.addFragment(new AllUserFragment(), "USER");
+        adapter.addFragment(new AllAgentFragment(), "AGENT");
+        adapter.addFragment(new AllClubFragment(), "CLUB");
         viewPager.setAdapter(adapter);
     }
-
 
     @Override
     public void onPause() {

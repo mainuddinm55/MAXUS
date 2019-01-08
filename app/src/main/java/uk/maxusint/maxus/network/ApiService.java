@@ -1,5 +1,9 @@
 package uk.maxusint.maxus.network;
 
+import com.jakewharton.rxbinding2.internal.GenericTypeNullable;
+
+import java.util.List;
+
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -10,19 +14,24 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import uk.maxusint.maxus.network.model.Transaction;
 import uk.maxusint.maxus.network.response.AdminResponse;
 import uk.maxusint.maxus.network.response.AgentResponse;
 import uk.maxusint.maxus.network.response.AllBetRateResponse;
 import uk.maxusint.maxus.network.response.AllBetResponse;
+import uk.maxusint.maxus.network.response.AllUserResponse;
 import uk.maxusint.maxus.network.response.BetRateResponse;
 import uk.maxusint.maxus.network.response.BetResponse;
 import uk.maxusint.maxus.network.response.ClubResponse;
+import uk.maxusint.maxus.network.response.DefaultResponse;
 import uk.maxusint.maxus.network.response.InsertedMatchResponse;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 import uk.maxusint.maxus.network.response.MatchResponse;
 import uk.maxusint.maxus.network.response.UserResponse;
 
 public interface ApiService {
+    //Users
+    //Create Club
     @FormUrlEncoded
     @POST("createclub")
     Single<ResponseBody> createClub(
@@ -81,8 +90,7 @@ public interface ApiService {
             @Field("upazilla") String upazilla,
             @Field("up") String up,
             @Field("type_id") int typeId,
-            @Field("pin_id") int pinId,
-            @Field("trade_balance") float tradeBalance
+            @Field("pin_id") int pinId
     );
 
     @FormUrlEncoded
@@ -106,6 +114,34 @@ public interface ApiService {
             @Field("email") String email,
             @Field("password") String password
     );
+
+    @FormUrlEncoded
+    @POST("login")
+    Single<UserResponse> login(
+            @Field("email") String email,
+            @Field("password") String password
+    );
+
+    //Normal User exists or not
+    @GET("isuserexists/{username}")
+    Single<DefaultResponse> isUserExist(@Path("username") String username);
+
+    @GET("alluser")
+    Single<AllUserResponse> getAllUsers();
+
+    @GET("allagent")
+    Single<AllUserResponse> getAllAgents();
+
+    @GET("allclub")
+    Single<AllUserResponse> getAllClubs();
+
+    //Get Agent By ID
+    @GET("agentbyid/{id}")
+    Single<UserResponse> getAgentById(@Path("id") int id);
+
+    //Get Club By ID
+    @GET("clubbyid/{id}")
+    Single<UserResponse> getClubByID(@Path("id") int id);
 
     @FormUrlEncoded
     @POST("adminlogin")
@@ -225,4 +261,29 @@ public interface ApiService {
 
     @GET("betratesbybet/{id}")
     Call<AllBetRateResponse> getAllBetRateByBet(@Path("id") int id);
+
+    //Transaction
+
+    //add transaction
+    @FormUrlEncoded
+    @POST("addtransaction")
+    Single<DefaultResponse> addTransaction(
+            @Field("from_username") String fromUsername,
+            @Field("to_username") String toUsername,
+            @Field("amount") double amount,
+            @Field("trans_type") String transType,
+            @Field("trans_charge") double transCharge
+    );
+
+    //all Deposit Transaction
+    @GET("alldeposittransactions/{username}")
+    Single<List<Transaction>> getAllDepositTransaction(@Path("username") String username);
+
+    //All Withdraw Transaction
+    @GET("allwithdrawtransactions/{username}")
+    Single<List<Transaction>> getAllWithDrawTransaction(@Path("username") String username);
+
+    //All Balance Transfer Transaction
+    @GET("allbalancetransfertransactions/{username}")
+    Single<List<Transaction>> getAllBalanceTransferTransaction(@Path("username") String username);
 }

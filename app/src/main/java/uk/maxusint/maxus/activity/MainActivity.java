@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,29 +19,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
-import android.widget.Toast;
 
-import java.io.IOException;
-
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import uk.maxusint.maxus.R;
-import uk.maxusint.maxus.fragment.AddAgentFragment;
-import uk.maxusint.maxus.fragment.AddClubFragment;
-import uk.maxusint.maxus.fragment.AddMatchFragment;
-import uk.maxusint.maxus.fragment.AddUserFragment;
 import uk.maxusint.maxus.fragment.AdminHomeFragment;
-import uk.maxusint.maxus.fragment.AllBetFragment;
-import uk.maxusint.maxus.fragment.CreateBetFragment;
-import uk.maxusint.maxus.fragment.HomeFragment;
+import uk.maxusint.maxus.fragment.UserFragment;
 import uk.maxusint.maxus.fragment.MatchFragment;
-import uk.maxusint.maxus.fragment.SetBetRateFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
-import uk.maxusint.maxus.network.ApiClient;
-import uk.maxusint.maxus.network.ApiService;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentLoader {
@@ -186,7 +168,7 @@ public class MainActivity extends AppCompatActivity
                 case 1:
                     return new MatchFragment();
                 case 2:
-                    return new AddMatchFragment();
+                    return new UserFragment();
             }
             return null;
         }

@@ -55,20 +55,31 @@ public class AllPremiumFragment extends Fragment implements MatchBetAdapter.Item
     private int betRateId = 0;
     private int betMode;
 
+    static AllPremiumFragment sInstance;
+
     public AllPremiumFragment() {
         // Required empty public constructor
+        Log.e(TAG, "AllPremiumFragment: ");
+    }
+
+    public static synchronized AllPremiumFragment getInstance() {
+        if (sInstance == null)
+            sInstance = new AllPremiumFragment();
+        return sInstance;
     }
 
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: ");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_all_premium, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Log.e(TAG, "onViewCreated: ");
         ButterKnife.bind(this, view);
         allBetsRecyclerView.setHasFixedSize(true);
         allBetsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
@@ -78,6 +89,30 @@ public class AllPremiumFragment extends Fragment implements MatchBetAdapter.Item
             betMode = betModeBundle.getInt(BET_MODE);
             getAllMatches();
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop: ");
     }
 
     private void getAllMatches() {

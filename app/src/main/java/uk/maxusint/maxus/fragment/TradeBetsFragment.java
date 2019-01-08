@@ -41,7 +41,7 @@ public class TradeBetsFragment extends Fragment {
     public static final String TAG = "TradeBetsFragment";
     public static final String BET_MODE = "BET_MODE";
     private CompositeDisposable disposable = new CompositeDisposable();
-
+    private static TradeBetsFragment sInstance;
     @BindView(R.id.classic_text_view)
     TextView classicTextView;
     @BindView(R.id.classic_recycler_view)
@@ -137,6 +137,13 @@ public class TradeBetsFragment extends Fragment {
 
     public TradeBetsFragment() {
         // Required empty public constructor
+        Log.e(TAG, "TradeBetsFragment: ");
+    }
+
+    public static TradeBetsFragment getInstance() {
+        if (sInstance == null)
+            sInstance = new TradeBetsFragment();
+        return sInstance;
     }
 
 
@@ -144,13 +151,14 @@ public class TradeBetsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.e(TAG, "onCreateView: ");
         return inflater.inflate(R.layout.fragment_trade_bets, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-
+        Log.e(TAG, "onViewCreated: ");
         apiService = ApiClient.getInstance().getApi();
 
         classicRecyclerView.setHasFixedSize(true);
@@ -216,6 +224,31 @@ public class TradeBetsFragment extends Fragment {
                             }
                         })
         );
+    }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop: ");
     }
 
 }

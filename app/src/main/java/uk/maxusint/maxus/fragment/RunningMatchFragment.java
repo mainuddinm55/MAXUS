@@ -57,10 +57,12 @@ public class RunningMatchFragment extends Fragment {
     private MatchAdapter matchAdapter;
 
     public RunningMatchFragment() {
+        Log.e(TAG, "RunningMatchFragment: ");
         // Required empty public constructor
     }
 
     public static synchronized RunningMatchFragment getInstance() {
+        Log.e(TAG, "getInstance: ");
         if (sInstance == null)
             sInstance = new RunningMatchFragment();
         return sInstance;
@@ -69,6 +71,7 @@ public class RunningMatchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        Log.e(TAG, "onCreateView: ");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_running_match, container, false);
     }
@@ -76,6 +79,7 @@ public class RunningMatchFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
+        Log.e(TAG, "onViewCreated: ");
         apiService = ApiClient.getInstance().getApi();
 
         runningMatchRecyclerView.setHasFixedSize(true);
@@ -85,6 +89,30 @@ public class RunningMatchFragment extends Fragment {
         runningMatchRecyclerView.setAdapter(matchAdapter);
         getAllRunningMatch();
 
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        Log.e(TAG, "onPause: ");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e(TAG, "onResume: ");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Log.e(TAG, "onStart: ");
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        Log.e(TAG, "onStop: ");
     }
 
     private void getAllRunningMatch() {
@@ -119,12 +147,14 @@ public class RunningMatchFragment extends Fragment {
             noMatchTextView.setVisibility(View.VISIBLE);
         }
     }
+
     @OnClick(R.id.add_match)
     void addMatch() {
         Intent intent = new Intent(mContext, UpdateBetActivity.class);
         intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_ADD_MATCH);
         startActivity(intent);
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

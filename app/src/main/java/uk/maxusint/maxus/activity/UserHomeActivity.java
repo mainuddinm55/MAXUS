@@ -1,6 +1,8 @@
 package uk.maxusint.maxus.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -16,11 +18,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import uk.maxusint.maxus.R;
+import uk.maxusint.maxus.fragment.AccountFragment;
 import uk.maxusint.maxus.fragment.UserHomeFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
 
 public class UserHomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentLoader {
+
+    public static final String USER_TYPE = "uk.maxusint.maxus.activity.USER_TYPE";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +44,20 @@ public class UserHomeActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        loadFragment(new UserHomeFragment(), UserHomeFragment.TAG);
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                if (menuItem.getItemId() == R.id.action_account) {
+                    loadFragment(new AccountFragment(), AccountFragment.TAG);
+                }
+                return true;
+            }
+        });
+
+
+        UserHomeFragment userHomeFragment = new UserHomeFragment();
+        loadFragment(userHomeFragment, UserHomeFragment.TAG);
     }
 
     @Override
@@ -102,7 +120,7 @@ public class UserHomeActivity extends AppCompatActivity
     @Override
     public void loadFragment(Fragment fragment, String tag) {
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.fragment_container,fragment,tag);
+        ft.replace(R.id.fragment_container, fragment, tag);
         ft.commit();
     }
 }

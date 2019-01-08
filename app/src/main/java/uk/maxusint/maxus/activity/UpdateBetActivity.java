@@ -10,6 +10,7 @@ import uk.maxusint.maxus.fragment.AddMatchFragment;
 import uk.maxusint.maxus.fragment.AllClassicBetFragment;
 import uk.maxusint.maxus.fragment.AllRoyalBetFragment;
 import uk.maxusint.maxus.fragment.UpdateBetFragment;
+import uk.maxusint.maxus.fragment.UpdateUserFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.model.Bet;
 
@@ -23,6 +24,7 @@ public class UpdateBetActivity extends AppCompatActivity implements FragmentLoad
     public static final String ACTION_ALL_CLASSIC_BETS = "uk.maxusint.maxus.activity.ACTION_ALL_CLASSIC_BETS";
     public static final String ACTION_ALL_ROYAL_BETS = "uk.maxusint.maxus.activity.ACTION_ALL_ROYAL_BETS";
     public static final String ACTION_ADD_MATCH = "uk.maxusint.maxus.activity.ACTION_ADD_MATCH";
+    public static final String ACTION_UPDATE_USER = "uk.maxusint.maxus.activity.ACTION_UPDATE_USER";
 
 
     @Override
@@ -58,7 +60,14 @@ public class UpdateBetActivity extends AppCompatActivity implements FragmentLoad
                         loadFragment(royalBetFragment, AllRoyalBetFragment.TAG);
                         break;
                     case ACTION_ADD_MATCH:
-                        loadFragment(new AddMatchFragment(),AddMatchFragment.TAG);
+                        loadFragment(new AddMatchFragment(), AddMatchFragment.TAG);
+                        break;
+                    case ACTION_UPDATE_USER:
+                        UpdateUserFragment updateUserFragment = new UpdateUserFragment();
+                        Bundle userBundle = new Bundle();
+                        userBundle.putParcelable(UpdateUserFragment.USER, bundle.getParcelable(UpdateUserFragment.USER));
+                        updateUserFragment.setArguments(userBundle);
+                        loadFragment(updateUserFragment, UpdateUserFragment.TAG);
                         break;
                 }
             }

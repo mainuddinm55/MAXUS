@@ -146,13 +146,13 @@ public class AddUserFragment extends Fragment implements TextWatcher {
 
                 switch (userType) {
                     case "Royal":
-                        userTypeId = 1;
+                        userTypeId = 4;
                         break;
                     case "Classic":
-                        userTypeId = 2;
+                        userTypeId = 5;
                         break;
                     case "Premium":
-                        userTypeId = 3;
+                        userTypeId = 6;
                         break;
                     default:
                         break;
@@ -240,7 +240,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
             return;
         }
 
-        if (userTypeId == 1 || userTypeId == 2) {
+        if (userTypeId == 4 || userTypeId == 5) {
             if (TextUtils.isEmpty(pinEditText.getText())) {
                 pinLayout.setError("Pin required");
                 pinLayout.requestFocus();
@@ -278,7 +278,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
                                     final boolean err = jsonObject.getBoolean("error");
                                     if (!err) {
                                         agentId = jsonObject.getInt("agent_id");
-                                        if (userTypeId == 1 || userTypeId == 2) {
+                                        if (userTypeId == 4 || userTypeId == 5) {
                                             disposable.add(
                                                     apiService.isPinValid(
                                                             pinEditText.getText().toString(),
@@ -334,13 +334,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
     }
 
     private void registerUser() {
-        float tradeBalance = 0;
-        if (userTypeId == 1) {
-            tradeBalance = 30;
-        } else if (userTypeId == 2) {
-            tradeBalance = 100;
-        }
-        if (userTypeId != 3) {
+        if (userTypeId != 6) {
             disposable.add(
                     apiService.registerNewUser(
                             nameEditText.getText().toString(),
@@ -354,8 +348,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
                             "",
                             "",
                             userTypeId,
-                            pinId,
-                            tradeBalance
+                            pinId
                     ).subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
