@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,9 @@ public class IncomingRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_incoming_request);
         ButterKnife.bind(this);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
 
         requestAdapter = new IncomingRequestAdapter(this, transactionList);
         incomingRequestRecyclerView.setHasFixedSize(true);
@@ -65,6 +70,9 @@ public class IncomingRequestActivity extends AppCompatActivity {
                                 .subscribeWith(new DisposableSingleObserver<DefaultResponse>() {
                                     @Override
                                     public void onSuccess(DefaultResponse defaultResponse) {
+                                        if (transaction.getStatus().equalsIgnoreCase(uk.maxusint.maxus.utils.Transaction.Status.REQUEST_SEND)) {
+                                            updateTransactionStatus(uk.maxusint.maxus.utils.Transaction.Status.PENDING, transaction.getId());
+                                        }
                                         Intent intent = new Intent(IncomingRequestActivity.this, IncomingRequestDetailsActivity.class);
                                         intent.putExtra(IncomingRequestDetailsActivity.TRANSACTION, transaction);
                                         startActivity(intent);
@@ -80,6 +88,36 @@ public class IncomingRequestActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    private void updateTransactionStatus(String status, int id) {
+        disposable.add(
+                apiService.updateTransactionStatus(status, id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Transaction>() {
+                            @Override
+                            public void onSuccess(Transaction transaction) {
+                                Toast.makeText(IncomingRequestActivity.this, transaction.getStatus(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getAllRequestedTransaction() {

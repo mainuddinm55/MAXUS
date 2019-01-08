@@ -153,6 +153,10 @@ public interface ApiService {
     @GET("clubbyid/{id}")
     Single<UserResponse> getClubByID(@Path("id") int id);
 
+    //Get Admin
+    @GET("getadmin")
+    Single<User> getAdmin();
+
     @FormUrlEncoded
     @POST("adminlogin")
     Single<AdminResponse> adminLogin(
@@ -298,6 +302,11 @@ public interface ApiService {
     //Set From user seen
     @PUT("setfromuserseen/{id}")
     Single<DefaultResponse> setFromUserSeen(@Path("id") int id);
+
+    //Update transaction status
+    @FormUrlEncoded
+    @PUT("updatetransacationstatus/{id}")
+    Single<Transaction> updateTransactionStatus(@Field("status") String status, @Path("id") int id);
 
     //Set To user seen
     @PUT("settouserseen/{id}")
