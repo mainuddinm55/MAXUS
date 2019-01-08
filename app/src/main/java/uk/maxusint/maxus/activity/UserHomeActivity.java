@@ -1,5 +1,6 @@
 package uk.maxusint.maxus.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -21,6 +22,7 @@ import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.fragment.AccountFragment;
 import uk.maxusint.maxus.fragment.UserHomeFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
+import uk.maxusint.maxus.utils.SharedPref;
 
 public class UserHomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentLoader {
@@ -35,7 +37,7 @@ public class UserHomeActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
@@ -85,7 +87,13 @@ public class UserHomeActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_logout) {
+            SharedPref sharedPref = new SharedPref(this);
+            sharedPref.clearUser();
+            Intent intent = new Intent(this, LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             return true;
         }
 
@@ -112,7 +120,7 @@ public class UserHomeActivity extends AppCompatActivity
 
         }
 
-        DrawerLayout drawer =  findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }

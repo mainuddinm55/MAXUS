@@ -70,8 +70,29 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
         unbinder = ButterKnife.bind(this);
         sharedPref = new SharedPref(this);
         if (sharedPref.getUser() != null) {
-            Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+            Intent intent;
+            switch (sharedPref.getUser().getTypeId()) {
+                case User.UserType.ROYAL:
+                case User.UserType.CLASSIC:
+                case User.UserType.PREMIUM:
+                    intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+                    break;
+                case User.UserType.AGENT:
+                    intent = new Intent(LoginActivity.this, AgentHomeActivity.class);
+                    break;
+                case User.UserType.CLUB:
+                    intent = new Intent(LoginActivity.this, ClubHomeActivity.class);
+                    break;
+                case User.UserType.ADMIN:
+                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                    break;
+                default:
+                    intent = new Intent(LoginActivity.this, LoginActivity.class);
+                    break;
+            }
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             startActivity(intent);
+            overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
         emailEditText.addTextChangedListener(this);
         passwordEditText.addTextChangedListener(this);
@@ -116,10 +137,29 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                             public void onSuccess(UserResponse userResponse) {
                                 if (!userResponse.getError()) {
                                     sharedPref.putUser(userResponse.getUser());
-                                    if (userResponse.getUser().getTypeId() == User.UserType.ROYAL || userResponse.getUser().getTypeId() == User.UserType.CLASSIC) {
-                                        Intent intent = new Intent(LoginActivity.this, UserHomeActivity.class);
-                                        startActivity(intent);
+                                    Intent intent;
+                                    switch (userResponse.getUser().getTypeId()) {
+                                        case User.UserType.ROYAL:
+                                        case User.UserType.CLASSIC:
+                                        case User.UserType.PREMIUM:
+                                            intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+                                            break;
+                                        case User.UserType.AGENT:
+                                            intent = new Intent(LoginActivity.this, AgentHomeActivity.class);
+                                            break;
+                                        case User.UserType.CLUB:
+                                            intent = new Intent(LoginActivity.this, ClubHomeActivity.class);
+                                            break;
+                                        case User.UserType.ADMIN:
+                                            intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            break;
+                                        default:
+                                            intent = new Intent(LoginActivity.this, LoginActivity.class);
+                                            break;
                                     }
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                                    startActivity(intent);
+                                    overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                                 }
                             }
 

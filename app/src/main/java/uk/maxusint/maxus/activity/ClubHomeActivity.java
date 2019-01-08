@@ -15,15 +15,13 @@ import android.view.MenuItem;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.maxusint.maxus.R;
-import uk.maxusint.maxus.fragment.AddMatchFragment;
 import uk.maxusint.maxus.fragment.AgentProfileFragment;
 import uk.maxusint.maxus.fragment.AgentUserBettingFragment;
 import uk.maxusint.maxus.fragment.AgentUsersFragment;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.utils.SharedPref;
 
-public class AgentHomeActivity extends AppCompatActivity {
-    public static final String USER = "uk.maxusint.maxus.activity.USER";
+public class ClubHomeActivity extends AppCompatActivity {
     @BindView(R.id.view_pager)
     ViewPager viewPager;
     @BindView(R.id.bottom_navigation_view)
@@ -52,7 +50,7 @@ public class AgentHomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_agent_home);
+        setContentView(R.layout.activity_club_home);
         ButterKnife.bind(this);
 
         BottomNavigationAdapter adapter = new BottomNavigationAdapter(getSupportFragmentManager());
@@ -94,7 +92,7 @@ public class AgentHomeActivity extends AppCompatActivity {
             AgentUsersFragment usersFragment = AgentUsersFragment.getInstance();
             AgentProfileFragment profileFragment = AgentProfileFragment.getInstance();
             Bundle typeBundle = new Bundle();
-            typeBundle.putInt(AgentHomeActivity.USER, User.UserType.AGENT);
+            typeBundle.putInt(AgentHomeActivity.USER, User.UserType.CLUB);
             userBettingFragment.setArguments(typeBundle);
             usersFragment.setArguments(typeBundle);
             profileFragment.setArguments(typeBundle);

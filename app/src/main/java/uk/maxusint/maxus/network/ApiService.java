@@ -15,6 +15,8 @@ import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import uk.maxusint.maxus.network.model.Transaction;
+import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.network.model.UserBet;
 import uk.maxusint.maxus.network.response.AdminResponse;
 import uk.maxusint.maxus.network.response.AgentResponse;
 import uk.maxusint.maxus.network.response.AllBetRateResponse;
@@ -126,8 +128,16 @@ public interface ApiService {
     @GET("isuserexists/{username}")
     Single<DefaultResponse> isUserExist(@Path("username") String username);
 
+    //Get User Balance by Id
+    @GET("getuserbalance/{id}")
+    Single<Double> getUserBalance(@Path("id") int id);
+
     @GET("alluser")
     Single<AllUserResponse> getAllUsers();
+
+    //Get User by username
+    @GET("userbyid/{username}")
+    Single<User> getUserByUsername(@Path("username") String username);
 
     @GET("allagent")
     Single<AllUserResponse> getAllAgents();
@@ -194,6 +204,8 @@ public interface ApiService {
             @Field("bet_mode") int betMode
     );
 
+    //User Bets
+    //Place Bets
     @FormUrlEncoded
     @POST("userbet")
     Single<ResponseBody> placeUserBet(
@@ -205,6 +217,14 @@ public interface ApiService {
             @Field("bet_return_amount") double betReturnAmount,
             @Field("bet_mode_id") int betModeId
     );
+
+    //Get All Users Bets by Club ID
+    @GET("allusersbetsbyclub/{id}")
+    Single<List<UserBet>> getUsersBetByClub(@Path("id") int clubId);
+
+    //Get All Users Bets By Agent ID
+    @GET("alluserbetsbyagentid/{id}")
+    Single<List<UserBet>> getUsersBetsByAgent(@Path("id") int agentId);
 
     @FormUrlEncoded
     @PUT("updatebet/{id}")
@@ -275,6 +295,14 @@ public interface ApiService {
             @Field("trans_charge") double transCharge
     );
 
+    //Set From user seen
+    @PUT("setfromuserseen/{id}")
+    Single<DefaultResponse> setFromUserSeen(@Path("id") int id);
+
+    //Set To user seen
+    @PUT("settouserseen/{id}")
+    Single<DefaultResponse> setToUserSeen(@Path("id") int id);
+
     //all Deposit Transaction
     @GET("alldeposittransactions/{username}")
     Single<List<Transaction>> getAllDepositTransaction(@Path("username") String username);
@@ -286,4 +314,8 @@ public interface ApiService {
     //All Balance Transfer Transaction
     @GET("allbalancetransfertransactions/{username}")
     Single<List<Transaction>> getAllBalanceTransferTransaction(@Path("username") String username);
+
+    //All Requested Transactions
+    @GET("allrequestedtransactions/{username}")
+    Single<List<Transaction>> getAllRequestedTransaction(@Path("username") String username);
 }

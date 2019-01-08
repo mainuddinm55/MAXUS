@@ -50,6 +50,27 @@ public class SharedPref {
         editor.apply();
     }
 
+    public void clearUser() {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(USER_ID);
+        editor.remove(USER_NAME);
+        editor.remove(USER_USERNAME);
+        editor.remove(USER_EMAIL);
+        editor.remove(USER_MOBILE);
+        editor.remove(CLUB_ID);
+        editor.remove(USER_REFERENCE);
+        editor.remove(USER_AGENT_ID);
+        editor.remove(USER_DISTRICT);
+        editor.remove(USER_UPAZILLA);
+        editor.remove(USER_UP);
+        editor.remove(USER_STATUS);
+        editor.remove(USER_BALANCE);
+        editor.remove(USER_RANK_ID);
+        editor.remove(USER_TYPE_ID);
+        editor.apply();
+
+    }
+
     public User getUser() {
         int id = sharedPreferences.getInt(USER_ID, -1);
         String name = sharedPreferences.getString(USER_NAME, null);

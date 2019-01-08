@@ -74,4 +74,15 @@
     <string name="withdraw_text">Withdraw</string>
     <string name="balance_transfer_text">Balance Transfer</string>
     <string name="send_request_btn_text">Send Request</string>
+    <string name="profile_text">Profile</string>
+    <string name="betting_text">Betting</string>
+    <string name="action_logout">Logout</string>
+    <string name="no_user_betting_text">Currently no user betting</string>
+    <string name="edit_profile_text">Edit Profile</string>
+    <string name="change_password_text">Change Password</string>
+    <string name="notification_text">Notification</string>
+    <string name="user_request_text">Incoming Request</string>
+    <string name="bonus_text">Bonus</string>
+    <string name="from_username_text">From Username</string>
+    <string name="transfer_done_text">Transfer Done</string>
 </resources>

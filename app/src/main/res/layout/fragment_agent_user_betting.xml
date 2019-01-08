@@ -1,17 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragment.AgentUserBettingFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/user_bets_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="User Betting"
-        android:layout_gravity="center"
-        android:gravity="center"
-        android:textSize="30sp"/>
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="5dp"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:reverseLayout="false"
+        tools:listitem="@layout/user_bet_row_item" />
 
+    <TextView
+        android:id="@+id/no_user_betting_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/no_user_betting_text"
+        android:textSize="25sp"
+        android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/progress_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 </FrameLayout>

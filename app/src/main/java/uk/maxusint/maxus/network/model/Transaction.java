@@ -2,7 +2,9 @@ package uk.maxusint.maxus.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Transaction {
+import java.io.Serializable;
+
+public class Transaction implements Serializable {
     @SerializedName("id")
     private int id;
     @SerializedName("from_username")
@@ -19,6 +21,10 @@ public class Transaction {
     private double transCharge;
     @SerializedName("status")
     private String status;
+    @SerializedName("from_user_seen")
+    private int fromUserSeen;
+    @SerializedName("to_user_seen")
+    private int toUserSeen;
 
     public Transaction(int id, String fromUsername, String toUsername, String transDate, double amount, String transType, double transCharge, String status) {
         this.id = id;
@@ -93,5 +99,21 @@ public class Transaction {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public int getFromUserSeen() {
+        return fromUserSeen;
+    }
+
+    public void setFromUserSeen(int fromUserSeen) {
+        this.fromUserSeen = fromUserSeen;
+    }
+
+    public int getToUserSeen() {
+        return toUserSeen;
+    }
+
+    public void setToUserSeen(int toUserSeen) {
+        this.toUserSeen = toUserSeen;
     }
 }

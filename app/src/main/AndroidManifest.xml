@@ -15,28 +15,31 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustResize">
-
-        </activity>
-        <activity android:name=".activity.LoginActivity" />
-        <activity android:name=".activity.LoginTypeActivity"></activity>
-        <activity android:name=".activity.RegisterActivity" />
-        <activity
-            android:name=".activity.UserHomeActivity"
-            android:label="@string/title_activity_user_home"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".activity.UpdateBetActivity"></activity>
-        <activity android:name=".activity.AgentHomeActivity">
+            android:windowSoftInputMode="adjustResize" />
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.UpdateUserActivity"></activity>
-        <activity android:name=".activity.BalanceTransferActivity"></activity>
-        <activity android:name=".activity.DepositActivity"></activity>
-        <activity android:name=".activity.WithdrawActivity"></activity>
+        <activity android:name=".activity.LoginTypeActivity" />
+        <activity android:name=".activity.RegisterActivity" />
+        <activity
+            android:name=".activity.UserHomeActivity"
+            android:label="@string/title_activity_user_home"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.UpdateBetActivity" />
+        <activity android:name=".activity.AgentHomeActivity" />
+        <activity android:name=".activity.UpdateUserActivity" />
+        <activity android:name=".activity.BalanceTransferActivity" />
+        <activity android:name=".activity.DepositActivity" />
+        <activity android:name=".activity.WithdrawActivity" />
+        <activity android:name=".activity.ClubHomeActivity" />
+        <activity android:name=".activity.AccountActivity" />
+        <activity android:name=".activity.NotificationActivity" />
+        <activity android:name=".activity.IncomingRequestActivity" />
+        <activity android:name=".activity.IncomingRequestDetailsActivity"></activity>
     </application>
 
 </manifest>
