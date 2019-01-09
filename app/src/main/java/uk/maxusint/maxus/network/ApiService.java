@@ -322,6 +322,10 @@ public interface ApiService {
     @PUT("updatetransacationstatus/{id}")
     Single<Transaction> updateTransactionStatus(@Field("status") String status, @Path("id") int id);
 
+    //Get Transaction By ID
+    @GET("transactionbyid/{id}")
+    Single<Transaction> getTransactionById(@Path("id") int id);
+
     //Set To user seen
     @PUT("settouserseen/{id}")
     Single<DefaultResponse> setToUserSeen(@Path("id") int id);

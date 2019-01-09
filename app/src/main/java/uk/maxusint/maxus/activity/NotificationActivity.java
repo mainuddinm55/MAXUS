@@ -1,10 +1,12 @@
 package uk.maxusint.maxus.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -43,19 +45,42 @@ public class NotificationActivity extends AppCompatActivity {
         SharedPref sharedPref = new SharedPref(this);
         currentUser = sharedPref.getUser();
 
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         notificationRecyclerView.setHasFixedSize(true);
         notificationRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         adapter = new NotificationAdapter(NotificationActivity.this, notificationList);
         notificationRecyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         getUserNotifications();
 
         adapter.setItemClickListener(new NotificationAdapter.ItemClickListener() {
             @Override
             public void onClick(Notification notification) {
-                Toast.makeText(NotificationActivity.this, notification.getBody(), Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(NotificationActivity.this, NotificationDetailsActivity.class);
+                intent.putExtra(NotificationDetailsActivity.NOTIFICATION, notification);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         });
-
     }
 
     private void getUserNotifications() {

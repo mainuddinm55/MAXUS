@@ -86,4 +86,5 @@
     <string name="from_username_text">From Username</string>
     <string name="transfer_done_text">Transfer Done</string>
     <string name="transactions_text">Transactions</string>
+    <string name="ok_text">OK</string>
 </resources>

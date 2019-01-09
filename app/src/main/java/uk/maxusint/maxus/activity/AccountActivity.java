@@ -3,19 +3,32 @@ package uk.maxusint.maxus.activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.NoSuchElementException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.fragment.AccountFragment;
+import uk.maxusint.maxus.network.ApiClient;
+import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.utils.SharedPref;
 
 public class AccountActivity extends AppCompatActivity {
+    private static final String TAG = "AccountActivity";
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private ApiService apiService;
     @BindView(R.id.name_text_view)
     TextView nameTextView;
     @BindView(R.id.balance_text_view)
@@ -34,12 +47,20 @@ public class AccountActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.e(TAG, "onCreate: " );
         setContentView(R.layout.activity_account);
         ButterKnife.bind(this);
+        apiService = ApiClient.getInstance().getApi();
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         SharedPref sharedPref = new SharedPref(this);
         User user = sharedPref.getUser();
         if (user != null) {
@@ -47,8 +68,26 @@ public class AccountActivity extends AppCompatActivity {
                 balanceTransferTextView.setVisibility(View.GONE);
             }
             nameTextView.setText(user.getName());
-            String balance = String.valueOf(user.getTotalBalance()) + " $";
-            balanceTextView.setText(balance);
+            disposable.add(
+                    apiService.getUserBalance(user.getUserId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<Double>() {
+                                @Override
+                                public void onSuccess(Double aDouble) {
+                                    String amount = String.valueOf(aDouble) + " $";
+                                    balanceTextView.setText(amount);
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    if (e instanceof NoSuchElementException) {
+                                        Toast.makeText(AccountActivity.this, "User invalid", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+            );
+
         }
     }
 

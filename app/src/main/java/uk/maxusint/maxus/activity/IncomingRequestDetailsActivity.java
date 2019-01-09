@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -67,6 +68,10 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_incoming_request_details);
         ButterKnife.bind(this);
 
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         SharedPref sharedPref = new SharedPref(this);
         currentUser = sharedPref.getUser();
         apiService = ApiClient.getInstance().getApi();
@@ -78,6 +83,16 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
                 transactionDoneBtn.setVisibility(View.GONE);
             }
         }
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void getUserInfo(String fromUsername) {

@@ -25,6 +25,12 @@ public class BalanceTransferActivity extends AppCompatActivity {
         setContentView(R.layout.activity_balance_transfer);
         ButterKnife.bind(this);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
     }
