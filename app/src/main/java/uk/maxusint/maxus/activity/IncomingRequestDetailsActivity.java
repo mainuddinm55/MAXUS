@@ -1,14 +1,17 @@
 package uk.maxusint.maxus.activity;
 
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
+import com.gc.materialdesign.widgets.ProgressDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,6 +31,7 @@ import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.Transaction;
 import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.network.response.DefaultResponse;
 import uk.maxusint.maxus.utils.SharedPref;
 
 public class IncomingRequestDetailsActivity extends AppCompatActivity {
@@ -47,9 +51,15 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
     TextView mobileTextView;
     @BindView(R.id.amount_text_view)
     TextView amountTextView;
+    @BindView(R.id.status_text_view)
+    TextView statusTextView;
+    @BindView(R.id.transaction_done_btn)
+    Button transactionDoneBtn;
 
     private Transaction transaction;
     private User currentUser;
+    private ProgressDialog dialog;
+    private User requestFromUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +74,9 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
         transaction = (Transaction) intent.getSerializableExtra(TRANSACTION);
         if (transaction != null) {
             getUserInfo(transaction.getFromUsername());
+            if (transaction.getStatus().equalsIgnoreCase(uk.maxusint.maxus.utils.Transaction.Status.SUCCESS)) {
+                transactionDoneBtn.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -76,6 +89,7 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
                             @Override
                             public void onSuccess(User user) {
                                 updateUI(user);
+                                requestFromUser = user;
                             }
 
                             @Override
@@ -93,6 +107,7 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
         mobileTextView.setText(user.getMobile());
         String amount = transaction.getAmount() + " $";
         amountTextView.setText(amount);
+        statusTextView.setText(transaction.getStatus());
     }
 
     private String getDateTimeFromString(String dateString) {
@@ -109,28 +124,141 @@ public class IncomingRequestDetailsActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.transaction_done_btn)
-    void TransactionDone() {
-        disposable.add(
-                apiService.getUserBalance(12)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<Double>() {
-                            @Override
-                            public void onSuccess(Double aDouble) {
-                                if (transaction.getAmount() > aDouble) {
-                                    Toast.makeText(IncomingRequestDetailsActivity.this, "Your amount is too low", Toast.LENGTH_SHORT).show();
-                                } else {
-
+    void transactionDone() {
+        if (transaction.getTransType().equalsIgnoreCase(uk.maxusint.maxus.utils.Transaction.Type.TypeString.WITHDRAW)) {
+            showSpinner();
+            disposable.add(
+                    apiService.getUserBalance(requestFromUser.getUserId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<Double>() {
+                                @Override
+                                public void onSuccess(Double aDouble) {
+                                    if (transaction.getAmount() > aDouble) {
+                                        dismissSpinner();
+                                        Toast.makeText(IncomingRequestDetailsActivity.this, "Insufficient Balance", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        sendWithdrawTransactionAmount();
+                                    }
                                 }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    if (e instanceof NoSuchElementException) {
+                                        Toast.makeText(IncomingRequestDetailsActivity.this, "User invalid", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+            );
+        } else {
+            showSpinner();
+            disposable.add(
+                    apiService.getUserBalance(currentUser.getUserId())
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(new DisposableSingleObserver<Double>() {
+                                @Override
+                                public void onSuccess(Double aDouble) {
+                                    if (transaction.getAmount() > aDouble) {
+                                        dismissSpinner();
+                                        Toast.makeText(IncomingRequestDetailsActivity.this, "Insufficient Balance", Toast.LENGTH_SHORT).show();
+                                    } else {
+                                        sendDepositTransactionAmount();
+                                    }
+                                }
+
+                                @Override
+                                public void onError(Throwable e) {
+                                    if (e instanceof NoSuchElementException) {
+                                        Toast.makeText(IncomingRequestDetailsActivity.this, "User invalid", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            })
+            );
+        }
+    }
+
+    private void sendWithdrawTransactionAmount() {
+        disposable.add(
+                apiService.transactionApproved(
+                        transaction.getAmount(),
+                        transaction.getFromUsername(),
+                        transaction.getToUsername()
+                ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<DefaultResponse>() {
+                            @Override
+                            public void onSuccess(DefaultResponse defaultResponse) {
+                                dismissSpinner();
+                                if (!defaultResponse.isError()) {
+                                    updateTransactionStatus(transaction.getId());
+                                }
+                                Toast.makeText(IncomingRequestDetailsActivity.this, defaultResponse.getMessage(), Toast.LENGTH_SHORT).show();
                             }
 
                             @Override
                             public void onError(Throwable e) {
-                                if (e instanceof NoSuchElementException) {
-                                    Toast.makeText(IncomingRequestDetailsActivity.this, "User invalid", Toast.LENGTH_SHORT).show();
-                                }
+                                dismissSpinner();
+                                Log.e(TAG, "onError: " + e.getMessage());
                             }
                         })
         );
+    }
+
+    private void sendDepositTransactionAmount() {
+        disposable.add(
+                apiService.transactionApproved(
+                        transaction.getAmount(),
+                        transaction.getToUsername(),
+                        transaction.getFromUsername()
+                ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<DefaultResponse>() {
+                            @Override
+                            public void onSuccess(DefaultResponse defaultResponse) {
+                                dismissSpinner();
+                                if (!defaultResponse.isError()) {
+                                    updateTransactionStatus(transaction.getId());
+                                }
+                                Toast.makeText(IncomingRequestDetailsActivity.this, defaultResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                dismissSpinner();
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
+    }
+
+    private void updateTransactionStatus(int id) {
+        disposable.add(
+                apiService.updateTransactionStatus(uk.maxusint.maxus.utils.Transaction.Status.SUCCESS, id)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Transaction>() {
+                            @Override
+                            public void onSuccess(Transaction transaction) {
+                                Toast.makeText(IncomingRequestDetailsActivity.this, transaction.getStatus(), Toast.LENGTH_SHORT).show();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
+    }
+
+    private void showSpinner() {
+        dialog = new ProgressDialog(this, "Loading...");
+        dialog.show();
+    }
+
+    private void dismissSpinner() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }

@@ -2,14 +2,80 @@ package uk.maxusint.maxus.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
+import uk.maxusint.maxus.adapter.NotificationAdapter;
+import uk.maxusint.maxus.network.ApiClient;
+import uk.maxusint.maxus.network.ApiService;
+import uk.maxusint.maxus.network.model.Notification;
+import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.utils.SharedPref;
 
 public class NotificationActivity extends AppCompatActivity {
+    private static final String TAG = "NotificationActivity";
+    private CompositeDisposable disposable = new CompositeDisposable();
+    private ApiService apiService;
+    private List<Notification> notificationList = new ArrayList<>();
+    @BindView(R.id.notification_recycler_view)
+    RecyclerView notificationRecyclerView;
+    private NotificationAdapter adapter;
+    private User currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notification);
+        ButterKnife.bind(this);
+        apiService = ApiClient.getInstance().getApi();
+        SharedPref sharedPref = new SharedPref(this);
+        currentUser = sharedPref.getUser();
+
+        notificationRecyclerView.setHasFixedSize(true);
+        notificationRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        adapter = new NotificationAdapter(NotificationActivity.this, notificationList);
+        notificationRecyclerView.setAdapter(adapter);
+        getUserNotifications();
+
+        adapter.setItemClickListener(new NotificationAdapter.ItemClickListener() {
+            @Override
+            public void onClick(Notification notification) {
+                Toast.makeText(NotificationActivity.this, notification.getBody(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+    }
+
+    private void getUserNotifications() {
+        disposable.add(
+                apiService.getUserNotification(currentUser.getUsername())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<List<Notification>>() {
+                            @Override
+                            public void onSuccess(List<Notification> notifications) {
+                                notificationList.clear();
+                                notificationList.addAll(notifications);
+                                adapter.notifyDataSetChanged();
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
     }
 }

@@ -4,6 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:baselineAligned="false"
+    android:clickable="true"
+    android:focusable="true"
+    android:layout_marginBottom="1dp"
+    android:foreground="?android:attr/selectableItemBackground"
     android:orientation="horizontal"
     android:padding="10dp">
 
@@ -13,12 +17,13 @@
         android:layout_weight="1">
 
         <ImageView
+            android:id="@+id/notification_icon_image_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:contentDescription="@null"
-            android:padding="5dp"
-            android:scaleType="fitXY"
-            app:srcCompat="@drawable/ic_coin" />
+            android:padding="10dp"
+            android:scaleType="fitCenter"
+            app:srcCompat="@drawable/ic_account" />
     </LinearLayout>
 
     <LinearLayout
@@ -28,6 +33,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/notification_body_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="5dp"
@@ -35,6 +41,7 @@
             android:textSize="16sp" />
 
         <TextView
+            android:id="@+id/date_text_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingStart="10dp"

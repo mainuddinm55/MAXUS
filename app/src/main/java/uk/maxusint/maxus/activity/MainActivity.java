@@ -1,5 +1,6 @@
 package uk.maxusint.maxus.activity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,10 +22,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import uk.maxusint.maxus.R;
+import uk.maxusint.maxus.fragment.AccountFragment;
 import uk.maxusint.maxus.fragment.AdminHomeFragment;
 import uk.maxusint.maxus.fragment.UserFragment;
 import uk.maxusint.maxus.fragment.MatchFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
+import uk.maxusint.maxus.utils.SharedPref;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentLoader {
@@ -92,22 +95,21 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.user_home, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.action_logout:
+                SharedPref sharedPref = new SharedPref(this);
+                sharedPref.clearUser();
+                Intent intent = new Intent(this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -119,10 +121,10 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_camera) {
             //loadFragment(new AdminHomeFragment(), "");
-        } else if (id == R.id.nav_gallery) {
+        } else if (id == R.id.nav_profile) {
 
-        } else if (id == R.id.nav_slideshow) {
-
+        } else if (id == R.id.nav_account) {
+            viewPager.setCurrentItem(3);
         } else if (id == R.id.nav_manage) {
 
         } else if (id == R.id.nav_share) {
@@ -169,13 +171,15 @@ public class MainActivity extends AppCompatActivity
                     return new MatchFragment();
                 case 2:
                     return new UserFragment();
+                case 3:
+                    return new AccountFragment();
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

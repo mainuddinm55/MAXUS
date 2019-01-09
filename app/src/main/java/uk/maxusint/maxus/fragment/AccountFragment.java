@@ -1,6 +1,7 @@
 package uk.maxusint.maxus.fragment;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,22 +11,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.NoSuchElementException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.activity.BalanceTransferActivity;
 import uk.maxusint.maxus.activity.DepositActivity;
+import uk.maxusint.maxus.activity.IncomingRequestActivity;
+import uk.maxusint.maxus.activity.IncomingRequestDetailsActivity;
 import uk.maxusint.maxus.activity.WithdrawActivity;
+import uk.maxusint.maxus.network.ApiClient;
+import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.utils.SharedPref;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class AccountFragment extends Fragment implements View.OnClickListener {
+public class AccountFragment extends Fragment {
     public static final String TAG = "AccountFragment";
+    private CompositeDisposable disposable = new CompositeDisposable();
 
     @BindView(R.id.name_text_view)
     TextView nameTextView;
@@ -33,12 +46,9 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     TextView userTypeTextView;
     @BindView(R.id.balance_text_view)
     TextView balanceTextView;
-    @BindView(R.id.deposit_text_view)
-    TextView depositTextView;
-    @BindView(R.id.withdraw_text_view)
-    TextView withdrawTextView;
-    @BindView(R.id.balance_transfer_text_view)
-    TextView balanceTransferTextView;
+    private Context mContext;
+
+    private ApiService apiService;
 
     public AccountFragment() {
         // Required empty public constructor
@@ -55,15 +65,32 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
-
-        SharedPref sharedPref = new SharedPref(getContext());
+        apiService = ApiClient.getInstance().getApi();
+        SharedPref sharedPref = new SharedPref(mContext);
         User currentUser = sharedPref.getUser();
         nameTextView.setText(currentUser.getName());
         int type = currentUser.getTypeId();
-       
+        disposable.add(
+                apiService.getUserBalance(currentUser.getUserId())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<Double>() {
+                            @Override
+                            public void onSuccess(Double aDouble) {
+                                String amount = String.valueOf(aDouble)+" $";
+                                balanceTextView.setText(amount);
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                if (e instanceof NoSuchElementException) {
+                                    Toast.makeText(mContext, "User invalid", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        })
+        );
         String userType = null;
         switch (type) {
-
             case User.UserType.ROYAL:
                 userType = "Royal";
                 break;
@@ -84,29 +111,17 @@ public class AccountFragment extends Fragment implements View.OnClickListener {
                 break;
         }
         userTypeTextView.setText(userType);
-        balanceTextView.setText(String.valueOf(currentUser.getTotalBalance()));
-
-        depositTextView.setOnClickListener(this);
-        withdrawTextView.setOnClickListener(this);
-        balanceTransferTextView.setOnClickListener(this);
     }
 
+    @OnClick(R.id.transaction_text_view)
+    void transaction() {
+        Intent intent = new Intent(mContext, IncomingRequestActivity.class);
+        startActivity(intent);
+    }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.deposit_text_view:
-                Intent depositIntent = new Intent(getContext(), DepositActivity.class);
-                startActivity(depositIntent);
-                break;
-            case R.id.withdraw_text_view:
-                Intent withdrawIntent = new Intent(getContext(), WithdrawActivity.class);
-                startActivity(withdrawIntent);
-                break;
-            case R.id.balance_transfer_text_view:
-                Intent balanceTransferIntent = new Intent(getContext(), BalanceTransferActivity.class);
-                startActivity(balanceTransferIntent);
-                break;
-        }
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 }

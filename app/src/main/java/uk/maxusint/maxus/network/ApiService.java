@@ -14,6 +14,7 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import uk.maxusint.maxus.network.model.Notification;
 import uk.maxusint.maxus.network.model.Transaction;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.network.model.UserBet;
@@ -132,11 +133,24 @@ public interface ApiService {
     @GET("getuserbalance/{id}")
     Single<Double> getUserBalance(@Path("id") int id);
 
+    //Update user balance
+    @FormUrlEncoded
+    @PUT("appreovedtransaction")
+    Single<DefaultResponse> transactionApproved(
+            @Field("amount") double amount,
+            @Field("to_username") String toUsername,
+            @Field("from_username") String fromUsername
+    );
+
+    //Get User notification
+    @GET("usernotification/{username}")
+    Single<List<Notification>> getUserNotification(@Path("username") String username);
+
     @GET("alluser")
     Single<AllUserResponse> getAllUsers();
 
     //Get User by username
-    @GET("userbyid/{username}")
+    @GET("userbyusername/{username}")
     Single<User> getUserByUsername(@Path("username") String username);
 
     @GET("allagent")

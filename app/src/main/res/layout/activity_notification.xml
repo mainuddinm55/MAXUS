@@ -6,4 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".activity.NotificationActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/notification_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager"
+        app:reverseLayout="false" />
 </android.support.constraint.ConstraintLayout>

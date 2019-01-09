@@ -85,4 +85,5 @@
     <string name="bonus_text">Bonus</string>
     <string name="from_username_text">From Username</string>
     <string name="transfer_done_text">Transfer Done</string>
+    <string name="transactions_text">Transactions</string>
 </resources>

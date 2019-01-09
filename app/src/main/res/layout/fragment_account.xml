@@ -98,22 +98,6 @@
         </LinearLayout>
 
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-        <TextView
-            android:id="@+id/deposit_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="start"
-            android:padding="16dp"
-            android:text="@string/deposit_text"
-            android:textSize="18sp"
-            android:focusable="true" />
 
         <View
             android:layout_width="match_parent"
@@ -121,32 +105,14 @@
             android:background="@android:color/darker_gray" />
 
         <TextView
-            android:id="@+id/withdraw_text_view"
+            android:id="@+id/transaction_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:gravity="start"
             android:padding="16dp"
-            android:text="@string/withdraw_text"
-            android:textSize="18sp"
-            android:focusable="true" />
-
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray" />
-
-        <TextView
-            android:id="@+id/balance_transfer_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:foreground="?android:attr/selectableItemBackground"
-            android:gravity="start"
-            android:padding="16dp"
-            android:text="@string/balance_transfer_text"
+            android:text="@string/transactions_text"
             android:textSize="18sp"
             android:focusable="true" />
 
