@@ -67,8 +67,6 @@ public class AddClubFragment extends Fragment {
     @BindView(R.id.register_btn)
     Button registerBtn;
 
-    Unbinder unbinder;
-
     @BindView(R.id.name_layout)
     TextInputLayout nameLayout;
 
@@ -131,7 +129,7 @@ public class AddClubFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        unbinder = ButterKnife.bind(this, view);
+        ButterKnife.bind(this, view);
         nameEditText.addTextChangedListener(textWatcher);
         usernameEditText.addTextChangedListener(textWatcher);
         emailEditText.addTextChangedListener(textWatcher);

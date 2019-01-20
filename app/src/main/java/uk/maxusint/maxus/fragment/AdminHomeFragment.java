@@ -42,13 +42,13 @@ public class AdminHomeFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        Log.e(TAG, "onCreateView: " );
+        Log.e(TAG, "onCreateView: ");
         return inflater.inflate(R.layout.fragment_admin_home, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Log.e(TAG, "onViewCreated: " );
+        Log.e(TAG, "onViewCreated: ");
         ButterKnife.bind(this, view);
         setupWithViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
@@ -78,18 +78,11 @@ public class AdminHomeFragment extends Fragment {
         super.onStop();
         Log.e(TAG, "onStop: ");
     }
+
     private void setupWithViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        TradeBetsFragment tradeBetsFragment = TradeBetsFragment.getInstance();
-        AllPremiumFragment premiumFragment = AllPremiumFragment.getInstance();
-        Bundle tradeBundle = new Bundle();
-        Bundle premiumBundle = new Bundle();
-        tradeBundle.putInt(TradeBetsFragment.BET_MODE, Bet.BetMode.TRADE);
-        premiumBundle.putInt(AllPremiumFragment.BET_MODE, Bet.BetMode.ADVANCED);
-        tradeBetsFragment.setArguments(tradeBundle);
-        premiumFragment.setArguments(premiumBundle);
-        adapter.addFragment(tradeBetsFragment, "TRADE");
-        adapter.addFragment(premiumFragment, "ADVANCED");
+        adapter.addFragment(TradeBetsFragment.getInstance(), "TRADE");
+        adapter.addFragment(AllPremiumFragment.getInstance(), "ADVANCED");
         viewPager.setAdapter(adapter);
     }
 }

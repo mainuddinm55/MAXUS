@@ -74,10 +74,10 @@ public class AgentProfileFragment extends Fragment {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(user.getDistrict());
             if (!user.getUpazilla().isEmpty()) {
-                stringBuilder.append(", " + user.getUpazilla());
+                stringBuilder.append(", ").append(user.getUpazilla());
             }
             if (!user.getUp().isEmpty()) {
-                stringBuilder.append(", " + user.getUp());
+                stringBuilder.append(", ").append(user.getUp());
             }
             addressTextView.setText(stringBuilder.toString());
         }

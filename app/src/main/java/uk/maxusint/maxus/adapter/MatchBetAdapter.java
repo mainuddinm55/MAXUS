@@ -79,13 +79,7 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
                     itemClickListener.onCancelClick(bet_);
             }
         });
-        matchBetHolder.seeAllBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (itemClickListener != null)
-                    itemClickListener.seeAllBetsClick();
-            }
-        });
+
         matchBetHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,8 +106,6 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
         TextView matchTextView;
         @BindView(R.id.question_recycler_view)
         RecyclerView questionRecyclerView;
-        @BindView(R.id.see_all_btn)
-        Button seeAllBtn;
 
         public MatchBetHolder(@NonNull View itemView) {
             super(itemView);
@@ -131,7 +123,5 @@ public class MatchBetAdapter extends RecyclerView.Adapter<MatchBetAdapter.MatchB
         void onFinishClick(MatchBetRateResponse.Bet_ bet_);
 
         void onCancelClick(MatchBetRateResponse.Bet_ bet_);
-
-        void seeAllBetsClick();
     }
 }

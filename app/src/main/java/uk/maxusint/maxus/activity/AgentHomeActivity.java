@@ -19,6 +19,10 @@ import uk.maxusint.maxus.fragment.AddMatchFragment;
 import uk.maxusint.maxus.fragment.AgentProfileFragment;
 import uk.maxusint.maxus.fragment.AgentUserBettingFragment;
 import uk.maxusint.maxus.fragment.AgentUsersFragment;
+import uk.maxusint.maxus.fragment.AllUserFragment;
+import uk.maxusint.maxus.fragment.MoreFragment;
+import uk.maxusint.maxus.fragment.ProfileFragment;
+import uk.maxusint.maxus.fragment.UserFragment;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.utils.SharedPref;
 
@@ -34,14 +38,17 @@ public class AgentHomeActivity extends AppCompatActivity {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                     switch (menuItem.getItemId()) {
-                        case R.id.action_betting:
+                        case R.id.bottom_betting:
                             viewPager.setCurrentItem(0);
                             return true;
-                        case R.id.action_user:
+                        case R.id.bottom_user:
                             viewPager.setCurrentItem(1);
                             return true;
-                        case R.id.action_profile:
+                        case R.id.bottom_profile:
                             viewPager.setCurrentItem(2);
+                            return true;
+                        case R.id.bottom_more:
+                            viewPager.setCurrentItem(3);
                             return true;
                     }
 
@@ -61,25 +68,6 @@ public class AgentHomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.user_home, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_logout:
-                SharedPref sharedPref = new SharedPref(this);
-                sharedPref.clearUser();
-                Intent intent = new Intent(this, LoginActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     private static class BottomNavigationAdapter extends FragmentPagerAdapter {
 
@@ -102,16 +90,18 @@ public class AgentHomeActivity extends AppCompatActivity {
                 case 0:
                     return userBettingFragment;
                 case 1:
-                    return usersFragment;
+                    return new AllUserFragment();
                 case 2:
-                    return profileFragment;
+                    return new ProfileFragment();
+                case 3:
+                    return new MoreFragment();
             }
             return null;
         }
 
         @Override
         public int getCount() {
-            return 3;
+            return 4;
         }
     }
 }

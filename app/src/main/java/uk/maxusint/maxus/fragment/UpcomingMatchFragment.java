@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -30,16 +31,21 @@ import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.activity.UpdateBetActivity;
 import uk.maxusint.maxus.adapter.MatchAdapter;
+import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.Match;
+import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.network.response.MatchResponse;
+import uk.maxusint.maxus.utils.SharedPref;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class UpcomingMatchFragment extends Fragment {
     public static final String TAG = "UpcomingMatchFragment";
+    public static final String ACTION = "uk.maxusint.maxus.fragment.ACTION";
+    public static final String ACTION_CREATE_BET = "uk.maxusint.maxus.fragment.ACTION_CREATE_BET";
     private static UpcomingMatchFragment sInstance;
     private CompositeDisposable disposable = new CompositeDisposable();
     private ApiService apiService;
@@ -49,18 +55,20 @@ public class UpcomingMatchFragment extends Fragment {
     ProgressBar progressBar;
     @BindView(R.id.no_match_text_view)
     TextView noMatchTextView;
-
+    @BindView(R.id.add_match)
+    FloatingActionButton addMatch;
     private Context mContext;
     private List<Match> matchList = new ArrayList<>();
     private MatchAdapter matchAdapter;
+    private String action;
 
     public UpcomingMatchFragment() {
         // Required empty public constructor
-        Log.e(TAG, "UpcomingMatchFragment: " );
+        Log.e(TAG, "UpcomingMatchFragment: ");
     }
 
     public static synchronized UpcomingMatchFragment getInstance() {
-        Log.e(TAG, "getInstance: " );
+        Log.e(TAG, "getInstance: ");
         if (sInstance == null)
             sInstance = new UpcomingMatchFragment();
         return sInstance;
@@ -69,7 +77,7 @@ public class UpcomingMatchFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Log.e(TAG, "onCreateView: " );
+        Log.e(TAG, "onCreateView: ");
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_upcoming_match, container, false);
     }
@@ -78,12 +86,33 @@ public class UpcomingMatchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         apiService = ApiClient.getInstance().getApi();
-        Log.e(TAG, "onViewCreated: " );
+        Log.e(TAG, "onViewCreated: ");
         upcomingMatchRecyclerView.setHasFixedSize(true);
         upcomingMatchRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         upcomingMatchRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         matchAdapter = new MatchAdapter(matchList);
         upcomingMatchRecyclerView.setAdapter(matchAdapter);
+        User currentUser = new SharedPref(mContext).getUser();
+        if (currentUser != null && currentUser.getTypeId() == User.UserType.ADMIN) {
+            addMatch.show();
+        } else {
+            addMatch.hide();
+        }
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            action = bundle.getString(ACTION);
+        }
+        matchAdapter.setItemClickListener(new MatchAdapter.ItemClickListener() {
+            @Override
+            public void onClick(Match match) {
+                if (action != null && action.equals(ACTION_CREATE_BET)) {
+                    Intent intent = new Intent(mContext, UpdateBetActivity.class);
+                    intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_CREATE_NEW_BET);
+                    intent.putExtra(UpdateBetActivity.MATCH, match);
+                    startActivity(intent);
+                }
+            }
+        });
         getRunningMatch();
 
     }
@@ -111,6 +140,7 @@ public class UpcomingMatchFragment extends Fragment {
         super.onStop();
         Log.e(TAG, "onStop: ");
     }
+
     @OnClick(R.id.add_match)
     void addMatch() {
         Intent intent = new Intent(mContext, UpdateBetActivity.class);

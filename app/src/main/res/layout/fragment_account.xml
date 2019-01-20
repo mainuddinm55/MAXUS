@@ -16,12 +16,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:gravity="center"
             android:padding="16dp"
             android:text="@string/name_hint_text"
-            android:textSize="18sp"
-            android:focusable="true" />
+            android:textSize="18sp" />
 
         <View
             android:layout_width="match_parent"
@@ -38,25 +38,25 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:clickable="true"
+                android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="start"
                 android:padding="16dp"
                 android:text="@string/user_type_text"
-                android:textSize="18sp"
-                android:focusable="true" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/user_type_text_view"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
+                android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="end"
                 android:padding="16dp"
                 android:text="@string/user_type_text"
-                android:textSize="18sp"
-                android:focusable="true" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 
@@ -76,12 +76,12 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
                 android:clickable="true"
+                android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="start"
                 android:padding="16dp"
                 android:text="@string/balance_text"
-                android:textSize="18sp"
-                android:focusable="true" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/balance_text_view"
@@ -89,14 +89,13 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
+                android:focusable="true"
                 android:foreground="?android:attr/selectableItemBackground"
                 android:gravity="end"
                 android:padding="16dp"
                 android:text="@string/balance_text"
-                android:textSize="18sp"
-                android:focusable="true" />
+                android:textSize="18sp" />
         </LinearLayout>
-
 
 
         <View
@@ -109,12 +108,102 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"
+            android:focusable="true"
             android:foreground="?android:attr/selectableItemBackground"
             android:gravity="start"
             android:padding="16dp"
             android:text="@string/transactions_text"
-            android:textSize="18sp"
-            android:focusable="true" />
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/pin_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="start"
+            android:padding="16dp"
+            android:text="@string/security_pin_hint_text"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/bet_history_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="start"
+            android:padding="16dp"
+            android:text="@string/bet_history_text"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/shared_user_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="start"
+            android:padding="16dp"
+            android:text="@string/profit_shared_user_text"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/current_user_betting_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="start"
+            android:padding="16dp"
+            android:text="@string/current_user_betting"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <TextView
+            android:id="@+id/logout_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:gravity="start"
+            android:padding="16dp"
+            android:text="@string/logout_text"
+            android:textSize="18sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
 
     </LinearLayout>
 </ScrollView>

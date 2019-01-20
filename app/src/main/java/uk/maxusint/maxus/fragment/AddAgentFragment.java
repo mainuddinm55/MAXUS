@@ -83,7 +83,6 @@ public class AddAgentFragment extends Fragment {
 
     private ApiService apiService;
 
-    Unbinder unbinder;
     TextWatcher textWatcher = new TextWatcher() {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -115,7 +114,7 @@ public class AddAgentFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_agent, container, false);
@@ -123,7 +122,7 @@ public class AddAgentFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        unbinder = ButterKnife.bind(this, view);
+       ButterKnife.bind(this, view);
         nameEditText.addTextChangedListener(textWatcher);
         usernameEditText.addTextChangedListener(textWatcher);
         emailEditText.addTextChangedListener(textWatcher);
@@ -231,9 +230,9 @@ public class AddAgentFragment extends Fragment {
                                                                     boolean err = responseJson.getBoolean("error");
                                                                     String msg = responseJson.getString("message");
                                                                     if (!err) {
-                                                                        Toast.makeText(getContext(), responseJson.getString("message"), Toast.LENGTH_SHORT).show();
+                                                                        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
                                                                     } else {
-                                                                        errTextView.setText(responseJson.getString("message"));
+                                                                        errTextView.setText(msg);
                                                                         errTextView.setVisibility(View.VISIBLE);
                                                                     }
                                                                 } catch (IOException e) {

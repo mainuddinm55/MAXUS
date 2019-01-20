@@ -85,7 +85,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         }
 
         void bindTo(Notification notification) {
-            if (notification.getIsseen() > 0) {
+            if (notification.getSeen() > 0) {
                 itemView.setBackgroundColor(context.getResources().getColor(R.color.seenColor));
             } else {
                 itemView.setBackgroundColor(context.getResources().getColor(R.color.unseenColor));

@@ -12,22 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
-            android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"
+            android:name=".activity.AdminHomeActivity"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".activity.LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.RegisterActivity" />
-        <activity
-            android:name=".activity.UserHomeActivity"
-            android:label="@string/title_activity_user_home"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.UserHomeActivity" />
         <activity android:name=".activity.UpdateBetActivity" />
         <activity android:name=".activity.AgentHomeActivity" />
         <activity android:name=".activity.UpdateUserActivity" />
@@ -39,7 +28,24 @@
         <activity android:name=".activity.NotificationActivity" />
         <activity android:name=".activity.IncomingRequestActivity" />
         <activity android:name=".activity.IncomingRequestDetailsActivity" />
-        <activity android:name=".activity.NotificationDetailsActivity"></activity>
+        <activity android:name=".activity.NotificationDetailsActivity" />
+        <activity android:name=".activity.PinActivity" />
+        <activity android:name=".activity.PremiumUserActivity" />
+        <activity android:name=".activity.HomeActivity" />
+        <activity android:name=".activity.SplashScreenActivity"
+            android:theme="@style/FullscreenTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".activity.BetHistoryActivity" />
+        <activity android:name=".activity.BonusActivity" />
+        <activity android:name=".activity.AddAgentActivity" />
+        <activity android:name=".activity.ProfitSharedActivity" />
+        <activity android:name=".activity.AddEditSharedUserActivity" />
+        <activity android:name=".activity.UserBettingActivity"></activity>
     </application>
 
 </manifest>

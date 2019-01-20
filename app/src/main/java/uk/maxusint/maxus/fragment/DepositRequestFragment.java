@@ -57,6 +57,8 @@ public class DepositRequestFragment extends Fragment implements TextWatcher {
     TextInputEditText amountEditText;
     @BindView(R.id.amount_layout)
     TextInputLayout amountLayout;
+    @BindView(R.id.minimum_text_view)
+    TextView minimumTextView;
     @BindView(R.id.send_request_btn)
     Button sendRequestBtn;
     private int transactionType;
@@ -666,6 +668,7 @@ public class DepositRequestFragment extends Fragment implements TextWatcher {
         usernameLayout.setError(null);
         amountLayout.setError(null);
         Log.e(TAG, "onTextChanged: " + count);
+
     }
 
     @Override

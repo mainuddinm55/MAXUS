@@ -9,6 +9,8 @@ import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.fragment.AddMatchFragment;
 import uk.maxusint.maxus.fragment.AllClassicBetFragment;
 import uk.maxusint.maxus.fragment.AllRoyalBetFragment;
+import uk.maxusint.maxus.fragment.CreateBetFragment;
+import uk.maxusint.maxus.fragment.UpcomingMatchFragment;
 import uk.maxusint.maxus.fragment.UpdateBetFragment;
 import uk.maxusint.maxus.fragment.UpdateUserFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
@@ -25,6 +27,9 @@ public class UpdateBetActivity extends AppCompatActivity implements FragmentLoad
     public static final String ACTION_ALL_ROYAL_BETS = "uk.maxusint.maxus.activity.ACTION_ALL_ROYAL_BETS";
     public static final String ACTION_ADD_MATCH = "uk.maxusint.maxus.activity.ACTION_ADD_MATCH";
     public static final String ACTION_UPDATE_USER = "uk.maxusint.maxus.activity.ACTION_UPDATE_USER";
+    public static final String ACTION_EXISTING_MATCH_BET = "uk.maxusint.maxus.activity.ACTION_EXISTING_MATCH_BET";
+    public static final String ACTION_CREATE_NEW_BET = "uk.maxusint.maxus.activity.ACTION_CREATE_NEW_BET";
+    public static final String ACTION_ADD_AGENT = "uk.maxusint.maxus.activity.ACTION_ADD_AGENT";
 
 
     @Override
@@ -68,6 +73,20 @@ public class UpdateBetActivity extends AppCompatActivity implements FragmentLoad
                         userBundle.putParcelable(UpdateUserFragment.USER, bundle.getParcelable(UpdateUserFragment.USER));
                         updateUserFragment.setArguments(userBundle);
                         loadFragment(updateUserFragment, UpdateUserFragment.TAG);
+                        break;
+                    case ACTION_EXISTING_MATCH_BET:
+                        Bundle actionBundle = new Bundle();
+                        actionBundle.putString(UpcomingMatchFragment.ACTION, UpcomingMatchFragment.ACTION_CREATE_BET);
+                        UpcomingMatchFragment upcomingMatchFragment = new UpcomingMatchFragment();
+                        upcomingMatchFragment.setArguments(actionBundle);
+                        loadFragment(upcomingMatchFragment, UpcomingMatchFragment.TAG);
+                        break;
+                    case ACTION_CREATE_NEW_BET:
+                        Bundle matchBundle = new Bundle();
+                        matchBundle.putParcelable(CreateBetFragment.MATCH, bundle.getParcelable(MATCH));
+                        CreateBetFragment createBetFragment= new CreateBetFragment();
+                        createBetFragment.setArguments(matchBundle);
+                        loadFragment(createBetFragment,CreateBetFragment.TAG);
                         break;
                 }
             }

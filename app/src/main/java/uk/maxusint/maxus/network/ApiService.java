@@ -1,31 +1,31 @@
 package uk.maxusint.maxus.network;
 
-import com.jakewharton.rxbinding2.internal.GenericTypeNullable;
-
 import java.util.List;
 
 import io.reactivex.Single;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
-import retrofit2.http.PATCH;
+
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import uk.maxusint.maxus.network.model.BetOptionCalculation;
+import uk.maxusint.maxus.network.model.BetResult;
+import uk.maxusint.maxus.network.model.Commission;
 import uk.maxusint.maxus.network.model.Notification;
+import uk.maxusint.maxus.network.model.Pin;
+import uk.maxusint.maxus.network.model.Rank;
+import uk.maxusint.maxus.network.model.SharedUser;
 import uk.maxusint.maxus.network.model.Transaction;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.network.model.UserBet;
-import uk.maxusint.maxus.network.response.AdminResponse;
-import uk.maxusint.maxus.network.response.AgentResponse;
-import uk.maxusint.maxus.network.response.AllBetRateResponse;
+import uk.maxusint.maxus.network.model.UserBetHistory;
 import uk.maxusint.maxus.network.response.AllBetResponse;
 import uk.maxusint.maxus.network.response.AllUserResponse;
 import uk.maxusint.maxus.network.response.BetRateResponse;
 import uk.maxusint.maxus.network.response.BetResponse;
-import uk.maxusint.maxus.network.response.ClubResponse;
 import uk.maxusint.maxus.network.response.DefaultResponse;
 import uk.maxusint.maxus.network.response.InsertedMatchResponse;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
@@ -48,12 +48,6 @@ public interface ApiService {
             @Field("up") String up
     );
 
-    @FormUrlEncoded
-    @POST("clublogin")
-    Single<ClubResponse> clubLogin(
-            @Field("email") String email,
-            @Field("password") String password
-    );
 
     @GET("clubidbyusername/{username}")
     Single<ResponseBody> getIdByUsername(@Path("username") String username);
@@ -72,12 +66,6 @@ public interface ApiService {
             @Field("up") String up
     );
 
-    @FormUrlEncoded
-    @POST("agentlogin")
-    Single<AgentResponse> agentLogin(
-            @Field("email") String email,
-            @Field("password") String password
-    );
 
     @FormUrlEncoded
     @POST("createuser")
@@ -97,6 +85,22 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
+    @POST("createshareduser")
+    Single<DefaultResponse> createSharedUser(
+            @Field("name") String name,
+            @Field("username") String username,
+            @Field("email") String email,
+            @Field("mobile") String mobile,
+            @Field("district") String district,
+            @Field("upazilla") String upazilla,
+            @Field("up") String up,
+            @Field("shared_percent") double sharedPercent
+    );
+
+    @GET("allsharedusers")
+    Single<List<SharedUser>> getAllSharedUser();
+
+    @FormUrlEncoded
     @POST("createpremiumuser")
     Single<ResponseBody> registerNewPremiumUser(
             @Field("name") String name,
@@ -111,12 +115,6 @@ public interface ApiService {
             @Field("up") String up
     );
 
-    @FormUrlEncoded
-    @POST("userlogin")
-    Single<UserResponse> userLogin(
-            @Field("email") String email,
-            @Field("password") String password
-    );
 
     @FormUrlEncoded
     @POST("login")
@@ -146,18 +144,61 @@ public interface ApiService {
     @GET("usernotification/{username}")
     Single<List<Notification>> getUserNotification(@Path("username") String username);
 
+    //Seen notification
+    @PUT("seennotification/{id}")
+    Single<DefaultResponse> seenNotification(@Path("id") int id);
+
     @GET("alluser")
     Single<AllUserResponse> getAllUsers();
+
+    @GET("getallclubuser/{club_id}")
+    Single<List<User>> getAllUsersByClub(@Path("club_id") int id);
+
+    //Get All Club Agent
+    @GET("getallclubagent/{club_id}")
+    Single<List<User>> getAllAgentByClub(@Path("club_id") int id);
+
+    //Get All Agent Users
+    @GET("getallagentuser/{agentid}")
+    Single<List<User>> getAllAgentUser(@Path("agentid") int agentId);
 
     //Get User by username
     @GET("userbyusername/{username}")
     Single<User> getUserByUsername(@Path("username") String username);
+
+    //Get User by ID
+    @GET("getuserbyid/{id}")
+    Single<User> getUserById(@Path("id") int id);
 
     @GET("allagent")
     Single<AllUserResponse> getAllAgents();
 
     @GET("allclub")
     Single<AllUserResponse> getAllClubs();
+
+    //Get Commission
+    @FormUrlEncoded
+    @POST("addcommission")
+    Single<DefaultResponse> giveCommission(
+            @Field("comm_rate") double commRate,
+            @Field("amount") double amount,
+            @Field("username") String username,
+            @Field("from_user_id") int fromUserId,
+            @Field("bet_id") int betId,
+            @Field("purpose") String purpose
+    );
+
+    //Get Commission by Username
+    @GET("commissionbyusername/{username}")
+    Single<List<Commission>> getCommissionByUsername(@Path("username") String username);
+
+    //Get Commission by Id
+    @GET("commissionbyid/{id}")
+    Single<Commission> getCommissionById(@Path("id") int id);
+
+    //Get Total Bonus
+    @GET("usertotalbonus/{username}")
+    Single<Double> getUserBonus(@Path("username") String username);
 
     //Get Agent By ID
     @GET("agentbyid/{id}")
@@ -171,15 +212,20 @@ public interface ApiService {
     @GET("getadmin")
     Single<User> getAdmin();
 
-    @FormUrlEncoded
-    @POST("adminlogin")
-    Single<AdminResponse> adminLogin(
-            @Field("email") String email,
-            @Field("password") String password
-    );
-
     @GET("getagentidbyreference/{reference}")
     Single<ResponseBody> getAgentIdByReference(@Path("reference") String reference);
+
+    @FormUrlEncoded
+    @POST("createsecuritypin")
+    Single<DefaultResponse> createSecurityPin(@Field("pin") String pin, @Field("user_type_id") int userTypeId);
+
+    //All Security pin
+    @GET("allsecuritypin")
+    Single<List<Pin>> getAllPins();
+
+    //All User pin
+    @GET("alluserpin/{id}")
+    Single<List<Pin>> getUserPins(@Path("id") int id);
 
     @FormUrlEncoded
     @POST("ispinvalid")
@@ -226,7 +272,7 @@ public interface ApiService {
     //Place Bets
     @FormUrlEncoded
     @POST("userbet")
-    Single<ResponseBody> placeUserBet(
+    Single<DefaultResponse> placeUserBet(
             @Field("user_id") int userId,
             @Field("bet_id") int betId,
             @Field("bet_option_id") int betOptionId,
@@ -236,6 +282,18 @@ public interface ApiService {
             @Field("bet_mode_id") int betModeId
     );
 
+    @GET("getbetresult/{user_id}/{bet_id}")
+    Single<BetResult> getBetResult(@Path("user_id") int userId, @Path("bet_id") int betId);
+
+    @GET("userbetshistory/{id}")
+    Single<List<UserBetHistory>> getUserBetHistory(@Path("id") int userId);
+
+    @GET("isuseralreayplacebettoday/{user_id}")
+    Single<DefaultResponse> isUserAlreadyPlaceTradeBet(@Path("user_id") int userId);
+
+    @GET("gettotalbetotioncalculation/{bet_id}")
+    Single<List<BetOptionCalculation>> getOptionTotalCalculation(@Path("bet_id") int betId);
+
     //Get All Users Bets by Club ID
     @GET("allusersbetsbyclub/{id}")
     Single<List<UserBet>> getUsersBetByClub(@Path("id") int clubId);
@@ -243,6 +301,9 @@ public interface ApiService {
     //Get All Users Bets By Agent ID
     @GET("alluserbetsbyagentid/{id}")
     Single<List<UserBet>> getUsersBetsByAgent(@Path("id") int agentId);
+
+    @GET("allusersbets")
+    Single<List<UserBet>> getAllUserBets();
 
     @FormUrlEncoded
     @PUT("updatebet/{id}")
@@ -277,6 +338,9 @@ public interface ApiService {
             @Field("bet_mode_id") int betModeId
     );
 
+    @GET("optionbyid/{id}")
+    Single<String> getOptionById(@Path("id") int id);
+
     @FormUrlEncoded
     @PUT("updatebetrate/{id}")
     Single<BetRateResponse> updateBetRate(
@@ -291,14 +355,6 @@ public interface ApiService {
             @Path("user_type_id") int userTypeId
     );
 
-    @GET("allmatches")
-    Single<MatchResponse> getAllMatch();
-
-    @GET("matchbets/{match_id}")
-    Call<AllBetResponse> getMatchBets(@Path("match_id") int id);
-
-    @GET("betratesbybet/{id}")
-    Call<AllBetRateResponse> getAllBetRateByBet(@Path("id") int id);
 
     //Transaction
 
@@ -313,9 +369,6 @@ public interface ApiService {
             @Field("trans_charge") double transCharge
     );
 
-    //Set From user seen
-    @PUT("setfromuserseen/{id}")
-    Single<DefaultResponse> setFromUserSeen(@Path("id") int id);
 
     //Update transaction status
     @FormUrlEncoded
@@ -345,4 +398,10 @@ public interface ApiService {
     //All Requested Transactions
     @GET("allrequestedtransactions/{username}")
     Single<List<Transaction>> getAllRequestedTransaction(@Path("username") String username);
+
+    //Get all Ranks
+    @GET("ranks")
+    Single<List<Rank>> getAllRanks();
+
+
 }

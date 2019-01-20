@@ -21,6 +21,11 @@ import uk.maxusint.maxus.network.model.Match;
 
 public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchHolder> {
     private List<Match> matchList = new ArrayList<>();
+    private ItemClickListener itemClickListener;
+
+    public void setItemClickListener(ItemClickListener itemClickListener) {
+        this.itemClickListener = itemClickListener;
+    }
 
     public MatchAdapter(List<Match> matchList) {
         this.matchList = matchList;
@@ -31,7 +36,15 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchHolder>
     public MatchHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext().getApplicationContext())
                 .inflate(R.layout.match_row_item, viewGroup, false);
-        return new MatchHolder(itemView);
+        final MatchHolder matchHolder = new MatchHolder(itemView);
+        matchHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (itemClickListener != null)
+                    itemClickListener.onClick(matchList.get(matchHolder.getAdapterPosition()));
+            }
+        });
+        return matchHolder;
     }
 
     @Override
@@ -88,6 +101,10 @@ public class MatchAdapter extends RecyclerView.Adapter<MatchAdapter.MatchHolder>
             e.printStackTrace();
             return null;
         }
+    }
+
+    public interface ItemClickListener {
+        void onClick(Match match);
     }
 
     class MatchHolder extends RecyclerView.ViewHolder {

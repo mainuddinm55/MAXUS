@@ -1,35 +1,48 @@
 package uk.maxusint.maxus.network.model;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
 
 public class Notification implements Serializable {
-    @SerializedName("type_id")
-    private int id;
+
+    @SerializedName("id")
+    @Expose
+    private Integer id;
+    @SerializedName("username")
+    @Expose
+    private String username;
     @SerializedName("body")
+    @Expose
     private String body;
     @SerializedName("type")
+    @Expose
     private String type;
+    @SerializedName("type_id")
+    @Expose
+    private Integer typeId;
     @SerializedName("date")
+    @Expose
     private String date;
-    @SerializedName("isseen")
-    private int isseen;
+    @SerializedName("seen")
+    @Expose
+    private Integer seen;
 
-    public Notification(int id, String body, String type, String date, int isseen) {
-        this.id = id;
-        this.body = body;
-        this.type = type;
-        this.date = date;
-        this.isseen = isseen;
-    }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getBody() {
@@ -48,6 +61,14 @@ public class Notification implements Serializable {
         this.type = type;
     }
 
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+    public void setTypeId(Integer typeId) {
+        this.typeId = typeId;
+    }
+
     public String getDate() {
         return date;
     }
@@ -56,15 +77,18 @@ public class Notification implements Serializable {
         this.date = date;
     }
 
-    public int getIsseen() {
-        return isseen;
+    public Integer getSeen() {
+        return seen;
     }
 
-    public void setIsseen(int isseen) {
-        this.isseen = isseen;
+    public void setSeen(Integer seen) {
+        this.seen = seen;
     }
+
 
     public class Type {
         public static final String TRANSACTION = "Transaction";
+        public static final String BET_RESULT = "Bet Result";
+        public static final String COMMISSION = "Commission";
     }
 }

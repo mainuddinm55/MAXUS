@@ -74,7 +74,6 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
     @BindView(R.id.err_text_view)
     TextView errorTextView;
 
-    Unbinder unbinder;
     private Context mContext;
 
     private Calendar calendar = Calendar.getInstance();
@@ -109,7 +108,7 @@ public class AddMatchFragment extends Fragment implements TextWatcher {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        unbinder = ButterKnife.bind(this, view);
+        ButterKnife.bind(this, view);
         dateTextView.setText("Select Date");
         timeTextView.setText("Select Time");
 

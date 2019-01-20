@@ -23,11 +23,11 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
-import uk.maxusint.maxus.activity.BalanceTransferActivity;
-import uk.maxusint.maxus.activity.DepositActivity;
 import uk.maxusint.maxus.activity.IncomingRequestActivity;
-import uk.maxusint.maxus.activity.IncomingRequestDetailsActivity;
-import uk.maxusint.maxus.activity.WithdrawActivity;
+import uk.maxusint.maxus.activity.LoginActivity;
+import uk.maxusint.maxus.activity.PinActivity;
+import uk.maxusint.maxus.activity.ProfitSharedActivity;
+import uk.maxusint.maxus.activity.UserBettingActivity;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.User;
@@ -70,6 +70,7 @@ public class AccountFragment extends Fragment {
         User currentUser = sharedPref.getUser();
         nameTextView.setText(currentUser.getName());
         int type = currentUser.getTypeId();
+
         disposable.add(
                 apiService.getUserBalance(currentUser.getUserId())
                         .subscribeOn(Schedulers.io())
@@ -77,7 +78,7 @@ public class AccountFragment extends Fragment {
                         .subscribeWith(new DisposableSingleObserver<Double>() {
                             @Override
                             public void onSuccess(Double aDouble) {
-                                String amount = String.valueOf(aDouble)+" $";
+                                String amount = String.valueOf(aDouble) + " $";
                                 balanceTextView.setText(amount);
                             }
 
@@ -119,9 +120,30 @@ public class AccountFragment extends Fragment {
         startActivity(intent);
     }
 
+    @OnClick(R.id.pin_text_view)
+    void pinClick() {
+        startActivity(new Intent(mContext, PinActivity.class));
+    }
+
+    @OnClick(R.id.shared_user_text_view)
+    void sharedUser() {
+        startActivity(new Intent(mContext, ProfitSharedActivity.class));
+    }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @OnClick(R.id.current_user_betting_text_view)
+    void currentUserBetting() {
+        startActivity(new Intent(mContext, UserBettingActivity.class));
+    }
+
+    @OnClick(R.id.logout_text_view)
+    void logout() {
+        new SharedPref(mContext).clearUser();
+        startActivity(new Intent(mContext, LoginActivity.class));
     }
 }

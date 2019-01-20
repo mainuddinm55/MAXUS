@@ -96,8 +96,6 @@ public class AddUserFragment extends Fragment implements TextWatcher {
     @BindView(R.id.register_btn)
     Button registerBtn;
 
-    Unbinder unbinder;
-
     private int userTypeId = 0;
     private String userType;
     private String[] userTypes = new String[]{"Select user type", "Royal", "Classic", "Premium"};
@@ -118,7 +116,7 @@ public class AddUserFragment extends Fragment implements TextWatcher {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        unbinder = ButterKnife.bind(this, view);
+        ButterKnife.bind(this, view);
 
         nameEditText.addTextChangedListener(this);
         usernameEditText.addTextChangedListener(this);

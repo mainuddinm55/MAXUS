@@ -1,6 +1,7 @@
 package uk.maxusint.maxus.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,15 +15,10 @@ import android.view.ViewGroup;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.adapter.ViewPagerAdapter;
-import uk.maxusint.maxus.network.ApiClient;
-import uk.maxusint.maxus.network.ApiService;
-import uk.maxusint.maxus.network.response.AllUserResponse;
+import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.utils.SharedPref;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -33,6 +29,9 @@ public class UserFragment extends Fragment {
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+
+    private User currentUser;
+    private Context mContext;
 
     public UserFragment() {
         // Required empty public constructor
@@ -48,9 +47,16 @@ public class UserFragment extends Fragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         Log.e(TAG, "onViewCreated");
+        currentUser = new SharedPref(mContext).getUser();
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
 
@@ -58,9 +64,14 @@ public class UserFragment extends Fragment {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(new AllUserFragment(), "USER");
-        adapter.addFragment(new AllAgentFragment(), "AGENT");
-        adapter.addFragment(new AllClubFragment(), "CLUB");
+        if (currentUser != null && currentUser.getTypeId() == User.UserType.ADMIN) {
+            adapter.addFragment(new AllUserFragment(), "USER");
+            adapter.addFragment(new AllAgentFragment(), "AGENT");
+            adapter.addFragment(new AllClubFragment(), "CLUB");
+        } else if (currentUser != null && currentUser.getTypeId() == User.UserType.CLUB) {
+            adapter.addFragment(new AllUserFragment(), "USER");
+            adapter.addFragment(new AllAgentFragment(), "AGENT");
+        }
         viewPager.setAdapter(adapter);
     }
 

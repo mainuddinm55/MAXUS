@@ -40,6 +40,7 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import es.dmoral.toasty.Toasty;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -195,7 +196,7 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
             return;
         }
         if (userType == 0) {
-            Toast.makeText(mContext, "Select user type", Toast.LENGTH_SHORT).show();
+            Toasty.warning(mContext, "Select user type", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -329,7 +330,7 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
                                     boolean err = jsonObject.getBoolean("error");
                                     if (!err) {
                                         String msg = jsonObject.getString("message");
-                                        Toast.makeText(mContext, msg, Toast.LENGTH_SHORT).show();
+                                        Toasty.success(mContext, msg, Toast.LENGTH_SHORT).show();
                                         showMoreOptionDialog();
                                     }
                                 } catch (IOException e) {
@@ -341,7 +342,7 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
 
                             @Override
                             public void onError(Throwable e) {
-
+                                e.printStackTrace();
                             }
                         })
         );
@@ -360,14 +361,16 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
                             @Override
                             public void onSuccess(BetRateResponse betRateResponse) {
                                 if (!betRateResponse.getError()) {
-                                    Toast.makeText(mContext, betRateResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                    Toasty.success(mContext, betRateResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toasty.error(mContext, betRateResponse.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(TAG, "onError: " + e.getMessage());
-                                Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
+                                Toasty.error(mContext, e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         })
         );
@@ -391,6 +394,7 @@ public class SetBetRateFragment extends Fragment implements TextWatcher {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
+                getActivity().finish();
             }
         });
         builder.show();

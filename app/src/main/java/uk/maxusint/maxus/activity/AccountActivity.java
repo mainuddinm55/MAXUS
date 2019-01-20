@@ -19,7 +19,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import uk.maxusint.maxus.R;
-import uk.maxusint.maxus.fragment.AccountFragment;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.User;
