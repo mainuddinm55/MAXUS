@@ -2,7 +2,9 @@ package uk.maxusint.maxus.network.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Notification {
+import java.io.Serializable;
+
+public class Notification implements Serializable {
     @SerializedName("type_id")
     private int id;
     @SerializedName("body")
@@ -60,5 +62,9 @@ public class Notification {
 
     public void setIsseen(int isseen) {
         this.isseen = isseen;
+    }
+
+    public class Type {
+        public static final String TRANSACTION = "Transaction";
     }
 }

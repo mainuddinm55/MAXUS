@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="uk.maxusint.maxus">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -40,8 +39,7 @@
         <activity android:name=".activity.NotificationActivity" />
         <activity android:name=".activity.IncomingRequestActivity" />
         <activity android:name=".activity.IncomingRequestDetailsActivity" />
-        <activity android:name=".activity.NotificationDetailsActivity" />
-        <activity android:name=".activity.BetDetailsActivity"></activity>
+        <activity android:name=".activity.NotificationDetailsActivity"></activity>
     </application>
 
 </manifest>

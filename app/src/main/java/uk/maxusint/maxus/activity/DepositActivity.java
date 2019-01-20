@@ -30,9 +30,13 @@ public class DepositActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
     @Override

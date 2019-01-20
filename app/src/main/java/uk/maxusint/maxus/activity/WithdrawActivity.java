@@ -29,6 +29,12 @@ public class WithdrawActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
     }

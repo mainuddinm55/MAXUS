@@ -49,6 +49,12 @@ public class IncomingRequestActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         requestAdapter = new IncomingRequestAdapter(this, transactionList);
         incomingRequestRecyclerView.setHasFixedSize(true);
         incomingRequestRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
@@ -87,7 +93,6 @@ public class IncomingRequestActivity extends AppCompatActivity {
 
             }
         });
-
     }
 
     private void updateTransactionStatus(String status, int id) {
