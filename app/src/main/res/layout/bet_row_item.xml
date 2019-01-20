@@ -5,11 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:clickable="true"
-    android:elevation="10dp"
     android:foreground="?android:attr/selectableItemBackground"
-    >
+    app:cardElevation="10dp"
+    android:focusable="true">
 
     <LinearLayout
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -27,8 +28,6 @@
             android:id="@+id/option_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingStart="10dp"
-            android:paddingLeft="10dp"
             app:layoutManager="android.support.v7.widget.GridLayoutManager"
             app:spanCount="2"
             tools:listitem="@layout/bet_option_row_item" />

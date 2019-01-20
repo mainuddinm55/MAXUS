@@ -56,6 +56,7 @@ public class RunningMatchFragment extends Fragment {
     private List<Match> matchList = new ArrayList<>();
     private MatchAdapter matchAdapter;
 
+
     public RunningMatchFragment() {
         Log.e(TAG, "RunningMatchFragment: ");
         // Required empty public constructor

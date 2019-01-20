@@ -22,6 +22,7 @@ import uk.maxusint.maxus.adapter.ViewPagerAdapter;
  */
 public class MatchFragment extends Fragment {
     private static final String TAG = "MatchFragment";
+    private static MatchFragment sInstance;
     @BindView(R.id.tabs)
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
@@ -29,6 +30,12 @@ public class MatchFragment extends Fragment {
 
     public MatchFragment() {
         // Required empty public constructor
+    }
+
+    public static synchronized MatchFragment getInstance() {
+        if (sInstance == null)
+            sInstance = new MatchFragment();
+        return sInstance;
     }
 
 

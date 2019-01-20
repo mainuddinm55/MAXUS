@@ -226,7 +226,7 @@ public interface ApiService {
     //Place Bets
     @FormUrlEncoded
     @POST("userbet")
-    Single<ResponseBody> placeUserBet(
+    Single<DefaultResponse> placeUserBet(
             @Field("user_id") int userId,
             @Field("bet_id") int betId,
             @Field("bet_option_id") int betOptionId,
@@ -235,6 +235,9 @@ public interface ApiService {
             @Field("bet_return_amount") double betReturnAmount,
             @Field("bet_mode_id") int betModeId
     );
+
+    @GET("isuseralreayplacebettoday/{user_id}")
+    Single<DefaultResponse> todayAlreadyBetOnTradeMode(@Path("user_id") int useId);
 
     //Get All Users Bets by Club ID
     @GET("allusersbetsbyclub/{id}")

@@ -1,8 +1,6 @@
 package uk.maxusint.maxus.fragment;
 
 import android.content.Context;
-import android.content.IntentFilter;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -20,6 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +26,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,12 +39,13 @@ import okhttp3.ResponseBody;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.activity.LoginActivity;
 import uk.maxusint.maxus.adapter.MatchBetAdapter;
-import uk.maxusint.maxus.listener.FragmentLoader;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.Bet;
 import uk.maxusint.maxus.network.model.BetRate;
+import uk.maxusint.maxus.network.model.MatchBetRates;
 import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.network.response.DefaultResponse;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 import uk.maxusint.maxus.utils.SharedPref;
 
@@ -51,16 +53,32 @@ import uk.maxusint.maxus.utils.SharedPref;
 public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemClickListener {
     public static final String TAG = "UserHomeFragment";
     private CompositeDisposable disposable = new CompositeDisposable();
-    private FragmentLoader fragmentLoader;
+
+    static UserHomeFragment sInstance;
     private Context mContext;
     @BindView(R.id.all_bets_recycler_view)
     RecyclerView allBetsRecyclerView;
+    @BindView(R.id.no_bets_text_view)
+    TextView noBetsTextView;
+    @BindView(R.id.progress_bar)
+    ProgressBar progressBar;
+    MatchBetAdapter adapter;
+
     private ApiService apiService;
     private User user;
+    private List<MatchBetRateResponse.Match_> matches = new ArrayList<>();
+    private AlertDialog placeDialog;
 
 
     public UserHomeFragment() {
         // Required empty public constructor
+    }
+
+    public static synchronized UserHomeFragment getInstance() {
+        if (sInstance == null) {
+            sInstance = new UserHomeFragment();
+        }
+        return sInstance;
     }
 
 
@@ -85,6 +103,10 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
         allBetsRecyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
         apiService = ApiClient.getInstance().getApi();
 
+        adapter = new MatchBetAdapter(mContext, matches, LoginActivity.NORMAL_TYPE);
+        allBetsRecyclerView.setAdapter(adapter);
+        adapter.setItemClickListener(UserHomeFragment.this);
+
         getAllMatches();
 
     }
@@ -93,10 +115,10 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
-        fragmentLoader = (FragmentLoader) context;
     }
 
     private void getAllMatches() {
+        progressBar.setVisibility(View.VISIBLE);
         int mode = 0;
         switch (user.getTypeId()) {
             case User.UserType.ROYAL:
@@ -116,22 +138,33 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
                         .subscribeWith(new DisposableSingleObserver<MatchBetRateResponse>() {
                             @Override
                             public void onSuccess(MatchBetRateResponse matchBetRateResponse) {
-                                MatchBetAdapter adapter = new MatchBetAdapter(mContext, matchBetRateResponse.getMatches(), LoginActivity.NORMAL_TYPE);
-                                allBetsRecyclerView.setAdapter(adapter);
-                                adapter.setItemClickListener(UserHomeFragment.this);
+                                progressBar.setVisibility(View.GONE);
+                                matches.clear();
+                                matches.addAll(matchBetRateResponse.getMatches());
+                                adapter.notifyDataSetChanged();
+                                toggleNoBets();
                             }
 
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(TAG, "onError: " + e.getMessage());
+                                progressBar.setVisibility(View.GONE);
                             }
                         })
         );
     }
 
+    private void toggleNoBets() {
+        if (matches.size() > 0) {
+            noBetsTextView.setVisibility(View.GONE);
+        } else {
+            noBetsTextView.setVisibility(View.VISIBLE);
+        }
+    }
+
     @Override
     public void onBetRateClick(MatchBetRateResponse.Match_ match_, final MatchBetRateResponse.Bet_ bet_, final BetRate betRate) {
-        Toast.makeText(mContext, betRate.getOptions(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(mContext, betRate.getOptions(), Toast.LENGTH_SHORT).show();
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final View view = LayoutInflater.from(mContext).inflate(R.layout.bet_place_layout, null);
         TextView matchTextView = view.findViewById(R.id.match_text_view);
@@ -143,6 +176,7 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
         final TextView minimumBetTextView = view.findViewById(R.id.minimum_bet_text_view);
         Button placeBetBtn = view.findViewById(R.id.place_bet_btn);
         builder.setView(view);
+        placeDialog = builder.create();
         if (user != null) {
             switch (user.getTypeId()) {
                 case User.UserType.ROYAL:
@@ -223,8 +257,12 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
         placeBetBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (TextUtils.isEmpty(amountEditText.getText())) {
+                    amountLayout.setError("Enter amount");
+                    amountLayout.requestFocus();
+                    return;
+                }
                 double amount = 0;
-                double returnAmount;
                 if (user != null) {
                     switch (user.getTypeId()) {
                         case User.UserType.ROYAL:
@@ -254,49 +292,75 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
                             break;
 
                     }
-                    returnAmount = amount * betRate.getRate();
 
-                    disposable.add(
-                            apiService.placeUserBet(
-                                    user.getUserId(),
-                                    bet_.getBet().getBetId(),
-                                    betRate.getId(),
-                                    betRate.getRate(),
-                                    amount,
-                                    returnAmount,
-                                    betRate.getBetModeId()
-                            ).subscribeOn(Schedulers.io())
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
-                                        @Override
-                                        public void onSuccess(ResponseBody responseBody) {
-                                            try {
-                                                String response = responseBody.string();
-                                                JSONObject jsonObject = new JSONObject(response);
-                                                boolean error = jsonObject.getBoolean("error");
-                                                if (!error) {
-                                                    Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                                                }
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onError(Throwable e) {
-                                            Log.e(TAG, "onError: " + e.getMessage());
-                                        }
-                                    })
-                    );
+                    if (bet_.getBet().getBetMode() == Bet.BetMode.TRADE) {
+                        placeTradeBet(bet_, betRate, amount);
+                    } else if (bet_.getBet().getBetMode() == Bet.BetMode.ADVANCED) {
+                        placeUserBet(bet_, betRate, amount);
+                    }
                 }
             }
         });
 
-        builder.show();
+        placeDialog.show();
+    }
+
+    private void placeTradeBet(final MatchBetRateResponse.Bet_ bet_, final BetRate betRate, final double amount) {
+        disposable.add(
+                apiService.todayAlreadyBetOnTradeMode(user.getUserId())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<DefaultResponse>() {
+                            @Override
+                            public void onSuccess(DefaultResponse defaultResponse) {
+                                if (!defaultResponse.isError()) {
+                                    placeUserBet(bet_, betRate, amount);
+                                } else {
+                                    placeDialog.dismiss();
+                                    Toast.makeText(mContext, defaultResponse.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                placeDialog.dismiss();
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
+    }
+
+    private void placeUserBet(final MatchBetRateResponse.Bet_ bet_, final BetRate betRate, double amount) {
+        double returnAmount = amount * betRate.getRate();
+        disposable.add(
+                apiService.placeUserBet(
+                        user.getUserId(),
+                        bet_.getBet().getBetId(),
+                        betRate.getId(),
+                        betRate.getRate(),
+                        amount,
+                        returnAmount,
+                        betRate.getBetModeId()
+                ).subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<DefaultResponse>() {
+                            @Override
+                            public void onSuccess(DefaultResponse responseBody) {
+                                placeDialog.dismiss();
+                                if (!responseBody.isError()) {
+                                    Toast.makeText(mContext, responseBody.getMessage(), Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(mContext, responseBody.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                placeDialog.dismiss();
+                                Log.e(TAG, "onError: " + e.getMessage());
+                            }
+                        })
+        );
     }
 
 
@@ -320,8 +384,4 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
 
     }
 
-    @Override
-    public void seeAllBetsClick() {
-
-    }
 }

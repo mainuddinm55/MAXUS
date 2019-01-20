@@ -51,7 +51,7 @@ public class BetAdapter extends RecyclerView.Adapter<BetAdapter.BetHolder> {
     public void onBindViewHolder(@NonNull final BetHolder betHolder, final int i) {
         betHolder.allBetsRecyclerView.setLayoutManager(new GridLayoutManager(mContext, 2));
         betHolder.allBetsRecyclerView.setHasFixedSize(true);
-        betHolder.allBetsRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.HORIZONTAL));
+        //betHolder.allBetsRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.HORIZONTAL));
         final MatchBetRateResponse.Bet_ bet = bets.get(i);
         BetRateAdapter adapter = new BetRateAdapter(mContext, bet.getBetRates());
         betHolder.allBetsRecyclerView.setAdapter(adapter);

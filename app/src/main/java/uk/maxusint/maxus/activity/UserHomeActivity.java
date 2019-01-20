@@ -7,7 +7,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,16 +21,48 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.fragment.AccountFragment;
+import uk.maxusint.maxus.fragment.AgentProfileFragment;
+import uk.maxusint.maxus.fragment.AgentUserBettingFragment;
+import uk.maxusint.maxus.fragment.AgentUsersFragment;
+import uk.maxusint.maxus.fragment.MatchFragment;
 import uk.maxusint.maxus.fragment.UserHomeFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
+import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.utils.SharedPref;
 
 public class UserHomeActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, FragmentLoader {
-
     public static final String USER_TYPE = "uk.maxusint.maxus.activity.USER_TYPE";
+
+    @BindView(R.id.view_pager)
+    ViewPager viewPager;
+    @BindView(R.id.bottom_navigation_view)
+    BottomNavigationView bottomNavigationView;
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_home:
+                            viewPager.setCurrentItem(0);
+                            return true;
+                        case R.id.action_match:
+                            viewPager.setCurrentItem(1);
+                            return true;
+                        case R.id.action_account:
+                            viewPager.setCurrentItem(2);
+                            return true;
+                    }
+
+                    return false;
+                }
+            };
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,20 +81,13 @@ public class UserHomeActivity extends AppCompatActivity
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation_view);
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.action_account) {
-                    loadFragment(new AccountFragment(), AccountFragment.TAG);
-                }
-                return true;
-            }
-        });
+        ButterKnife.bind(this);
 
+        BottomNavigationAdapter adapter = new BottomNavigationAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(adapter.getCount() - 1);
+        bottomNavigationView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
-        UserHomeFragment userHomeFragment = new UserHomeFragment();
-        loadFragment(userHomeFragment, UserHomeFragment.TAG);
     }
 
     @Override
@@ -130,5 +158,31 @@ public class UserHomeActivity extends AppCompatActivity
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.fragment_container, fragment, tag);
         ft.commit();
+    }
+
+    private static class BottomNavigationAdapter extends FragmentPagerAdapter {
+
+
+        BottomNavigationAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            switch (position) {
+                case 0:
+                    return UserHomeFragment.getInstance();
+                case 1:
+                    return MatchFragment.getInstance();
+                case 2:
+                    return AgentProfileFragment.getInstance();
+            }
+            return null;
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
     }
 }

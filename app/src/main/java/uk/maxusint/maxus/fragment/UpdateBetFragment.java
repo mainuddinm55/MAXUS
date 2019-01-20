@@ -130,9 +130,6 @@ public class UpdateBetFragment extends Fragment implements BetRateAdapter.ItemCl
                         switch (menuItem.getItemId()) {
                             case R.id.action_add_bet:
                                 CreateBetFragment createBetFragment = new CreateBetFragment();
-                                Bundle betModeBundle = new Bundle();
-                                betModeBundle.putInt(CreateBetFragment.BET_MODE, bet_.getBet().getBetMode());
-                                createBetFragment.setArguments(betModeBundle);
                                 fragmentLoader.loadFragment(createBetFragment, CreateBetFragment.TAG);
                                 return true;
                             case R.id.action_add_bet_rate:

@@ -9,8 +9,8 @@
     tools:context=".activity.UserHomeActivity"
     tools:showIn="@layout/app_bar_user_home">
 
-    <FrameLayout
-        android:id="@+id/fragment_container"
+    <uk.maxusint.maxus.utils.CustomViewPager
+        android:id="@+id/view_pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/bottom_navigation_view" />

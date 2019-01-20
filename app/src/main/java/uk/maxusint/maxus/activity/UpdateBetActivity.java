@@ -4,11 +4,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.fragment.AddMatchFragment;
 import uk.maxusint.maxus.fragment.AllClassicBetFragment;
 import uk.maxusint.maxus.fragment.AllRoyalBetFragment;
+import uk.maxusint.maxus.fragment.CreateBetFragment;
+import uk.maxusint.maxus.fragment.RunningMatchFragment;
+import uk.maxusint.maxus.fragment.UpcomingMatchFragment;
 import uk.maxusint.maxus.fragment.UpdateBetFragment;
 import uk.maxusint.maxus.fragment.UpdateUserFragment;
 import uk.maxusint.maxus.listener.FragmentLoader;
@@ -25,12 +29,17 @@ public class UpdateBetActivity extends AppCompatActivity implements FragmentLoad
     public static final String ACTION_ALL_ROYAL_BETS = "uk.maxusint.maxus.activity.ACTION_ALL_ROYAL_BETS";
     public static final String ACTION_ADD_MATCH = "uk.maxusint.maxus.activity.ACTION_ADD_MATCH";
     public static final String ACTION_UPDATE_USER = "uk.maxusint.maxus.activity.ACTION_UPDATE_USER";
+    public static final String ACTION_EXISTING_MATCH_BET = "uk.maxusint.maxus.activity.ACTION_EXISTING_MATCH_BET";
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_update_bet);
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
         Bundle bundle = getIntent().getExtras();
         if (bundle != null) {
             String action = bundle.getString(ACTION);
@@ -69,10 +78,23 @@ public class UpdateBetActivity extends AppCompatActivity implements FragmentLoad
                         updateUserFragment.setArguments(userBundle);
                         loadFragment(updateUserFragment, UpdateUserFragment.TAG);
                         break;
+                    case ACTION_EXISTING_MATCH_BET:
+                        loadFragment(new UpcomingMatchFragment(), UpcomingMatchFragment.TAG);
+                        break;
                 }
             }
         }
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

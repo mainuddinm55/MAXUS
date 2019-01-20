@@ -7,11 +7,13 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.internal.NavigationMenu;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
+import io.github.yavski.fabspeeddial.FabSpeedDial;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -50,6 +54,8 @@ public class TradeBetsFragment extends Fragment {
     TextView royalTextView;
     @BindView(R.id.royal_recycler_view)
     RecyclerView royalRecyclerView;
+    @BindView(R.id.fab_speed_dial)
+    FabSpeedDial fabSpeedDial;
 
     private ApiService apiService;
     private Context mContext;
@@ -87,12 +93,7 @@ public class TradeBetsFragment extends Fragment {
 
         }
 
-        @Override
-        public void seeAllBetsClick() {
-            Intent intent = new Intent(mContext, UpdateBetActivity.class);
-            intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_ALL_CLASSIC_BETS);
-            startActivity(intent);
-        }
+
     };
     private MatchBetAdapter.ItemClickListener royalListener = new MatchBetAdapter.ItemClickListener() {
         @Override
@@ -125,13 +126,6 @@ public class TradeBetsFragment extends Fragment {
         @Override
         public void onCancelClick(MatchBetRateResponse.Bet_ bet_) {
 
-        }
-
-        @Override
-        public void seeAllBetsClick() {
-            Intent intent = new Intent(mContext, UpdateBetActivity.class);
-            intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_ALL_ROYAL_BETS);
-            startActivity(intent);
         }
     };
 
@@ -171,12 +165,56 @@ public class TradeBetsFragment extends Fragment {
             getAllClassicBets();
             getAllRoyalBets();
         }
+
+        fabSpeedDial.setMenuListener(new FabSpeedDial.MenuListener() {
+            @Override
+            public boolean onPrepareMenu(NavigationMenu navigationMenu) {
+                return true;
+            }
+
+            @Override
+            public boolean onMenuItemSelected(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.fab_new_match:
+                        Intent newMatchIntent = new Intent(mContext, UpdateBetActivity.class);
+                        newMatchIntent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_ADD_MATCH);
+                        startActivity(newMatchIntent);
+                        break;
+                    case R.id.fab_existing_match:
+                        Intent intent = new Intent(mContext, UpdateBetActivity.class);
+                        intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_EXISTING_MATCH_BET);
+                        startActivity(intent);
+                        break;
+                }
+                return true;
+            }
+
+            @Override
+            public void onMenuClosed() {
+
+            }
+        });
+
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mContext = context;
+    }
+
+    @OnClick(R.id.see_all_classic_text_view)
+    public void seeAllClassicBets() {
+        Intent intent = new Intent(mContext, UpdateBetActivity.class);
+        intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_ALL_CLASSIC_BETS);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.see_all_royal_text_view)
+    public void seeAllRoyalBets() {
+        Intent intent = new Intent(mContext, UpdateBetActivity.class);
+        intent.putExtra(UpdateBetActivity.ACTION, UpdateBetActivity.ACTION_ALL_ROYAL_BETS);
+        startActivity(intent);
     }
 
     public void getAllClassicBets() {
