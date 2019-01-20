@@ -6,4 +6,7 @@
     <color name="card_background">#fffffb</color>
     <color name="seenColor">#FFFFFF</color>
     <color name="unseenColor">#E8E8E8</color>
+    <color name="row_activated">#212121</color>
+
+    <color name="black_overlay">#66000000</color>
 </resources>

@@ -4,6 +4,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,11 +25,30 @@ public class WithdrawActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_withdraw);
         ButterKnife.bind(this);
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         setupViewPager(viewPager);
         tabLayout.setupWithViewPager(viewPager);
     }
 
-
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
+                finish();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         DepositRequestFragment requestFragment = new DepositRequestFragment();

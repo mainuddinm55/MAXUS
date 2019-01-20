@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -35,7 +36,9 @@ import uk.maxusint.maxus.adapter.MatchAdapter;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.Match;
+import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.network.response.MatchResponse;
+import uk.maxusint.maxus.utils.SharedPref;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -50,11 +53,15 @@ public class RunningMatchFragment extends Fragment {
     ProgressBar progressBar;
     @BindView(R.id.no_match_text_view)
     TextView noMatchTextView;
+    @BindView(R.id.add_match)
+    FloatingActionButton addMatch;
 
     private static RunningMatchFragment sInstance;
     private Context mContext;
     private List<Match> matchList = new ArrayList<>();
     private MatchAdapter matchAdapter;
+
+    private User currentUser;
 
     public RunningMatchFragment() {
         Log.e(TAG, "RunningMatchFragment: ");
@@ -87,6 +94,13 @@ public class RunningMatchFragment extends Fragment {
         runningMatchRecyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         matchAdapter = new MatchAdapter(matchList);
         runningMatchRecyclerView.setAdapter(matchAdapter);
+        SharedPref sharedPref = new SharedPref(mContext);
+        currentUser = sharedPref.getUser();
+        if (currentUser != null && currentUser.getTypeId() == User.UserType.ADMIN) {
+            addMatch.show();
+        }else {
+            addMatch.hide();
+        }
         getAllRunningMatch();
 
     }

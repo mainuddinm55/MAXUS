@@ -18,6 +18,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.activity.AccountActivity;
+import uk.maxusint.maxus.activity.NotificationActivity;
 import uk.maxusint.maxus.network.model.User;
 import uk.maxusint.maxus.utils.SharedPref;
 
@@ -73,10 +74,10 @@ public class AgentProfileFragment extends Fragment {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(user.getDistrict());
             if (!user.getUpazilla().isEmpty()) {
-                stringBuilder.append(", " + user.getUpazilla());
+                stringBuilder.append(", ").append(user.getUpazilla());
             }
             if (!user.getUp().isEmpty()) {
-                stringBuilder.append(", " + user.getUp());
+                stringBuilder.append(", ").append(user.getUp());
             }
             addressTextView.setText(stringBuilder.toString());
         }
@@ -89,9 +90,13 @@ public class AgentProfileFragment extends Fragment {
     }
 
     @OnClick(R.id.account_text_view)
-    void openAccountActivity(){
+    void openAccountActivity() {
         Intent intent = new Intent(mContext, AccountActivity.class);
         startActivity(intent);
+    }
 
+    @OnClick(R.id.notification_text_view)
+    void notificationActivity() {
+        startActivity(new Intent(getContext(), NotificationActivity.class));
     }
 }

@@ -44,6 +44,7 @@ import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.Bet;
 import uk.maxusint.maxus.network.model.BetRate;
 import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.network.response.DefaultResponse;
 import uk.maxusint.maxus.network.response.MatchBetRateResponse;
 import uk.maxusint.maxus.utils.SharedPref;
 
@@ -267,23 +268,10 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
                                     betRate.getBetModeId()
                             ).subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
-                                    .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                                    .subscribeWith(new DisposableSingleObserver<DefaultResponse>() {
                                         @Override
-                                        public void onSuccess(ResponseBody responseBody) {
-                                            try {
-                                                String response = responseBody.string();
-                                                JSONObject jsonObject = new JSONObject(response);
-                                                boolean error = jsonObject.getBoolean("error");
-                                                if (!error) {
-                                                    Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(mContext, jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
-                                                }
-                                            } catch (IOException e) {
-                                                e.printStackTrace();
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
+                                        public void onSuccess(DefaultResponse responseBody) {
+                                            Toast.makeText(mContext, responseBody.getMessage(), Toast.LENGTH_SHORT).show();
                                         }
 
                                         @Override
@@ -320,8 +308,4 @@ public class UserHomeFragment extends Fragment implements MatchBetAdapter.ItemCl
 
     }
 
-    @Override
-    public void seeAllBetsClick() {
-
-    }
 }

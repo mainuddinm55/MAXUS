@@ -1,6 +1,7 @@
 package uk.maxusint.maxus.fragment;
 
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,6 +17,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.adapter.ViewPagerAdapter;
+import uk.maxusint.maxus.network.model.User;
+import uk.maxusint.maxus.utils.SharedPref;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -26,11 +29,18 @@ public class MatchFragment extends Fragment {
     TabLayout tabLayout;
     @BindView(R.id.view_pager)
     ViewPager viewPager;
+    private Context mContext;
 
     public MatchFragment() {
         // Required empty public constructor
     }
 
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -44,15 +54,22 @@ public class MatchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         ButterKnife.bind(this, view);
         Log.e(TAG, "onViewCreated: ");
-        setupWithViewPager(viewPager);
+        SharedPref sharedPref = new SharedPref(mContext);
+        User user = sharedPref.getUser();
+        setupWithViewPager(viewPager, user);
         tabLayout.setupWithViewPager(viewPager);
     }
 
-    private void setupWithViewPager(ViewPager viewPager) {
+    private void setupWithViewPager(ViewPager viewPager, User user) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
-        adapter.addFragment(RunningMatchFragment.getInstance(), "RUNNING");
-        adapter.addFragment(UpcomingMatchFragment.getInstance(), "UPCOMING");
-        adapter.addFragment(FinishMatchFragment.getInstance(), "FINISH");
+        if (user!=null && user.getTypeId() == User.UserType.ADMIN){
+            adapter.addFragment(RunningMatchFragment.getInstance(), "RUNNING");
+            adapter.addFragment(UpcomingMatchFragment.getInstance(), "UPCOMING");
+            adapter.addFragment(FinishMatchFragment.getInstance(), "FINISH");
+        }else {
+            adapter.addFragment(RunningMatchFragment.getInstance(), "RUNNING");
+            adapter.addFragment(UpcomingMatchFragment.getInstance(), "UPCOMING");
+        }
         viewPager.setAdapter(adapter);
     }
 

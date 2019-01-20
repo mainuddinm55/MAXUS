@@ -12,5 +12,8 @@
         android:id="@+id/action_user"
         android:icon="@drawable/ic_person_black"
         android:title="@string/user_text" />
-
+    <item
+        android:id="@+id/action_more"
+        android:icon="@drawable/ic_menu_black"
+        android:title="@string/more_text" />
 </menu>

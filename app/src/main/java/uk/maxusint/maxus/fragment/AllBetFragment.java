@@ -187,10 +187,7 @@ public class AllBetFragment extends Fragment implements MatchBetAdapter.ItemClic
         cancelBet(bet_);
     }
 
-    @Override
-    public void seeAllBetsClick() {
 
-    }
 
     private void cancelBet(MatchBetRateResponse.Bet_ bet_) {
         disposable.add(

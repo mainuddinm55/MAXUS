@@ -11,12 +11,6 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.widget.Button;
-import android.widget.Toast;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -26,20 +20,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.ResponseBody;
 import uk.maxusint.maxus.R;
 import uk.maxusint.maxus.network.ApiClient;
 import uk.maxusint.maxus.network.ApiService;
 import uk.maxusint.maxus.network.model.User;
-import uk.maxusint.maxus.network.response.AdminResponse;
-import uk.maxusint.maxus.network.response.AgentResponse;
-import uk.maxusint.maxus.network.response.ClubResponse;
 import uk.maxusint.maxus.network.response.UserResponse;
 import uk.maxusint.maxus.utils.SharedPref;
 
 public class LoginActivity extends AppCompatActivity implements TextWatcher {
     private static final String TAG = "LoginActivity";
-    public static final String LOGIN_TYPE = "LOGIN_TYPE";
     public static final String ADMIN_TYPE = "ADMIN_TYPE";
     public static final String CLUB_TYPE = "CLUB_TYPE";
     public static final String AGENT_TYPE = "AGENT_TYPE";
@@ -56,7 +45,6 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
     @BindView(R.id.login_btn)
     Button loginButton;
 
-    Unbinder unbinder;
 
     private ApiService apiService;
     private CompositeDisposable disposable = new CompositeDisposable();
@@ -67,15 +55,17 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        unbinder = ButterKnife.bind(this);
+        ButterKnife.bind(this);
         sharedPref = new SharedPref(this);
         if (sharedPref.getUser() != null) {
-            Intent intent;
+            Intent intent ;
             switch (sharedPref.getUser().getTypeId()) {
                 case User.UserType.ROYAL:
                 case User.UserType.CLASSIC:
-                case User.UserType.PREMIUM:
                     intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+                    break;
+                case User.UserType.PREMIUM:
+                    intent = new Intent(LoginActivity.this, PremiumUserActivity.class);
                     break;
                 case User.UserType.AGENT:
                     intent = new Intent(LoginActivity.this, AgentHomeActivity.class);
@@ -84,7 +74,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                     intent = new Intent(LoginActivity.this, ClubHomeActivity.class);
                     break;
                 case User.UserType.ADMIN:
-                    intent = new Intent(LoginActivity.this, MainActivity.class);
+                    intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
                     break;
                 default:
                     intent = new Intent(LoginActivity.this, LoginActivity.class);
@@ -102,7 +92,9 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
 
     @OnClick(R.id.register_btn)
     void gotoRegister() {
-
+        Intent intent = new Intent(this, RegisterActivity.class);
+        intent.putExtra(RegisterActivity.REGISTER_TYPE, NORMAL_TYPE);
+        startActivity(intent);
     }
 
     @OnClick(R.id.login_btn)
@@ -122,14 +114,14 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
             passwordLayout.requestFocus();
             return;
         }
-        userLogin();
+        userLogin(emailEditText.getText().toString(),passwordEditText.getText().toString());
     }
 
-    private void userLogin() {
+    private void userLogin(String email, String password) {
         disposable.add(
                 apiService.login(
-                        emailEditText.getText().toString(),
-                        passwordEditText.getText().toString()
+                        email,
+                        password
                 ).subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<UserResponse>() {
@@ -141,8 +133,10 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                                     switch (userResponse.getUser().getTypeId()) {
                                         case User.UserType.ROYAL:
                                         case User.UserType.CLASSIC:
-                                        case User.UserType.PREMIUM:
                                             intent = new Intent(LoginActivity.this, UserHomeActivity.class);
+                                            break;
+                                        case User.UserType.PREMIUM:
+                                            intent = new Intent(LoginActivity.this, PremiumUserActivity.class);
                                             break;
                                         case User.UserType.AGENT:
                                             intent = new Intent(LoginActivity.this, AgentHomeActivity.class);
@@ -151,7 +145,7 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                                             intent = new Intent(LoginActivity.this, ClubHomeActivity.class);
                                             break;
                                         case User.UserType.ADMIN:
-                                            intent = new Intent(LoginActivity.this, MainActivity.class);
+                                            intent = new Intent(LoginActivity.this, AdminHomeActivity.class);
                                             break;
                                         default:
                                             intent = new Intent(LoginActivity.this, LoginActivity.class);
@@ -166,94 +160,12 @@ public class LoginActivity extends AppCompatActivity implements TextWatcher {
                             @Override
                             public void onError(Throwable e) {
                                 Log.e(TAG, "onError: RxJava " + e.getMessage());
+                                e.printStackTrace();
                             }
                         })
         );
     }
 
-    private void agentLogin() {
-        disposable.add(
-                apiService.agentLogin(
-                        emailEditText.getText().toString(),
-                        passwordEditText.getText().toString()
-                ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<AgentResponse>() {
-                            @Override
-                            public void onSuccess(AgentResponse agentResponse) {
-                                Log.e(TAG, "Error: " + agentResponse.getError());
-                                Log.e(TAG, "Message: " + agentResponse.getMessage());
-                                Log.e(TAG, "Club: " + agentResponse.getAgent());
-                                if (!agentResponse.getError()) {
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "onError: " + e.getMessage());
-                            }
-                        })
-        );
-    }
-
-    private void adminLogin() {
-        disposable.add(
-                apiService.adminLogin(
-                        emailEditText.getText().toString(),
-                        passwordEditText.getText().toString()
-                ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<AdminResponse>() {
-                            @Override
-                            public void onSuccess(AdminResponse adminResponse) {
-                                Log.e(TAG, "Error: " + adminResponse.getError());
-                                Log.e(TAG, "Message: " + adminResponse.getMessage());
-                                Log.e(TAG, "Admin: " + adminResponse.getAdmin());
-                                if (!adminResponse.getError()) {
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "onError: " + e.getMessage());
-                            }
-                        })
-        );
-    }
-
-    private void clubLogin() {
-        disposable.add(
-                apiService.clubLogin(
-                        emailEditText.getText().toString(),
-                        passwordEditText.getText().toString()
-                ).subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(new DisposableSingleObserver<ClubResponse>() {
-                            @Override
-                            public void onSuccess(ClubResponse clubResponse) {
-                                Log.e(TAG, "Error: " + clubResponse.getError());
-                                Log.e(TAG, "Message: " + clubResponse.getMessage());
-                                Log.e(TAG, "Club: " + clubResponse.getClub());
-                                if (!clubResponse.getError()) {
-                                    Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                                    startActivity(intent);
-                                }
-                            }
-
-                            @Override
-                            public void onError(Throwable e) {
-                                Log.e(TAG, "onError: " + e.getMessage());
-                            }
-                        })
-        );
-    }
 
     @Override
     public void beforeTextChanged(CharSequence s, int start, int count, int after) {

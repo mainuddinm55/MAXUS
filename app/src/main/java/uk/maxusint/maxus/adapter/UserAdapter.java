@@ -6,9 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -18,7 +15,7 @@ import uk.maxusint.maxus.network.model.User;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
     private ItemClickListener itemClickListener;
-    private List<User> users ;
+    private List<User> users;
 
     public UserAdapter(List<User> users) {
         this.users = users;
@@ -33,7 +30,7 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         userHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (itemClickListener!=null)
+                if (itemClickListener != null)
                     itemClickListener.onClick(users.get(userHolder.getAdapterPosition()));
             }
         });
@@ -70,28 +67,37 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserHolder> {
         }
 
         void bindTo(User user) {
-            //String address = user.getUp() + ", " + user.getUpazilla() + ", " + user.getDistrict();
+            StringBuilder address = new StringBuilder();
+            if (user.getUp() != null && !user.getUp().equals("")) {
+                address.append(user.getUp()).append(", ");
+            }
+            if (user.getUpazilla() != null && !user.getUpazilla().equals("")) {
+                address.append(user.getUpazilla()).append(", ");
+            }
+            if (user.getDistrict() != null && !user.getDistrict().equals("")) {
+                address.append(user.getDistrict());
+            }
             nameTextView.setText(user.getName());
-            addressTextView.setText(user.getDistrict());
+            addressTextView.setText(address);
             mobileTextView.setText(user.getMobile());
             switch (user.getTypeId()) {
                 case User.UserType.ADMIN:
-                    userTypeTextView.setText("Admin");
+                    userTypeTextView.setText(R.string.admin_text);
                     break;
                 case User.UserType.CLUB:
-                    userTypeTextView.setText("Club");
+                    userTypeTextView.setText(R.string.club_text);
                     break;
                 case User.UserType.AGENT:
-                    userTypeTextView.setText("Agent");
+                    userTypeTextView.setText(R.string.agent_text);
                     break;
                 case User.UserType.ROYAL:
-                    userTypeTextView.setText("Royal");
+                    userTypeTextView.setText(R.string.royal_text);
                     break;
                 case User.UserType.CLASSIC:
-                    userTypeTextView.setText("Classic");
+                    userTypeTextView.setText(R.string.classic_text);
                     break;
                 case User.UserType.PREMIUM:
-                    userTypeTextView.setText("Premium");
+                    userTypeTextView.setText(R.string.premium_text);
                     break;
             }
         }
