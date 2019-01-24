@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
     android:orientation="vertical"
-    android:padding="16dp"
+    android:layout_margin="3dp"
     app:cardElevation="10dp">
 
     <LinearLayout
@@ -27,6 +26,8 @@
             android:id="@+id/question_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:paddingStart="5dp"
             android:paddingLeft="5dp"
             tools:listitem="@layout/bet_row_item" />
     </LinearLayout>
